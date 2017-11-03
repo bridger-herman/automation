@@ -2,18 +2,24 @@ import serial
 import ctypes
 import logging
 import io
+import time
 
-class SerialMockup():
+class SerialMockup:
     def __init__(self):
-        self.buf = io.StringIO()
+        logging.info('Using SerialMockup')
+        self.buf = io.BytesIO()
 
     def write(self, byte):
-        self.buf.write(str(bytes(byte)))
+        self.buf.write(bytes(byte))
         print('write', bytes(byte))
 
     def readline(self):
-        print('read', self.buf.getvalue())
-        self.buf = io.StringIO()
+        val = self.buf.getvalue()
+        print(val.__repr__())
+        print('read', val)
+        sleep_time = int(val[-2])*int(val[-1])
+        time.sleep(sleep_time / 1000.0) # TODO no magic numbers
+        self.buf = io.BytesIO()
 
     def close(self):
         pass
@@ -42,9 +48,10 @@ class SerialLEDChanger:
             else:
                 if self.alpha != None:
                     next_color += alpha
-                color_delay = list(next_color) + [next_delay]
-                bytes_send = (ctypes.c_ubyte * len(color_delay)) \
-                        (*color_delay)
+                delay, multiple = self.__seperate_duration(next_delay)
+                color_delay_multiple = list(next_color) + [delay] + [multiple]
+                bytes_send = (ctypes.c_ubyte * len(color_delay_multiple)) \
+                        (*color_delay_multiple)
                 self.ser.write(bytes_send)
                 self.ser.readline() # Did the Arduino receive?
 
@@ -54,8 +61,17 @@ class SerialLEDChanger:
     def __del__(self):
         self.ser.close()
 
+    def __seperate_duration(self, duration):
+        new_duration = duration
+        multiplier = 0
+        # TODO get actual max eventually, do while...
+        while multiplier <= 0 or new_duration > 255:
+            multiplier += 1
+            new_duration = duration // multiplier
+        return new_duration, multiplier
+
 if __name__ == '__main__':
     s = SerialLEDChanger()
     s.colors = ((5, 5, 5, 5) for i in range(5))
-    s.delays = (5 for i in range(5))
+    s.delays = (500 for i in range(5))
     s.start()
