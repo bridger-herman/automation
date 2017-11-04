@@ -3,10 +3,11 @@ import ctypes
 import logging
 import io
 import time
+import traceback
 
 class SerialMockup:
     def __init__(self):
-        logging.info('Using SerialMockup')
+        print('Using SerialMockup')
         self.buf = io.BytesIO()
 
     def write(self, byte):
@@ -31,9 +32,11 @@ class SerialLEDChanger:
         self.delays = None
         self.alpha = alpha
         try:
-            self.ser = serial.Serial('/dev/cu.usbmodem1421', 9600)
+            #  self.ser = serial.Serial('/dev/cu.usbmodem1421', 9600)
+            self.ser = serial.Serial('/dev/ttyACM0', 9600)
             self.ser.readline() # Priming read, for some reason?
         except serial.serialutil.SerialException:
+            print('tb',traceback.format_tb())
             self.ser = SerialMockup()
         self.active = False
 

@@ -13,5 +13,6 @@ class SingleLED(SerialLEDChanger):
             yield value 
 
 if __name__ == '__main__':
-    s = SingleLED((255, 255, 255, 255))
+    #  s = SingleLED((255, 255, 255, 255))
+    s = SingleLED((255, 30, 0, 0))
     s.start()
