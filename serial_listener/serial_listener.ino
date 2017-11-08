@@ -5,7 +5,7 @@
 #define MAX_VALUE 255
 
 #define NUMPINS 4
-#define BUFSIZE 6
+#define BUFSIZE 4
 
 const int PINS[] = {RED, GREEN, BLUE, WHITE};
 
@@ -14,6 +14,7 @@ void setup() {
   for (int i = 0; i < NUMPINS; i++) {
     pinMode(PINS[i], OUTPUT);
   }
+  Serial.println("Initialized");
 }
 
 void setRGBW(int value) {
@@ -30,18 +31,17 @@ void setRGBW(int r, int g, int b, int w) {
 }
 
 void loop() {
-  int d = 0;
   unsigned char buf[BUFSIZE];
   int bytesRead;
   while (true) {
     if (Serial.available() >= BUFSIZE*sizeof(unsigned char)) {
       bytesRead = Serial.readBytes(buf, BUFSIZE);  
+      if (bytesRead > 0) {
+        setRGBW(buf[0], buf[1], buf[2], buf[3]);
+        bytesRead = 0;
+        Serial.println("Changed");
+      }
     }
-    if (bytesRead > 0) {
-      setRGBW(buf[0], buf[1], buf[2], buf[3]);
-      d = (int) buf[4]*buf[5]; // Delay amount * multiplier
-    }
-    Serial.println("Changed");
-    delay(d);
+    
   }
 }
