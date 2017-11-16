@@ -1,11 +1,15 @@
 import sys
 sys.path.append('../led')
 from led_single import SingleLED
+from serial_wrapper import SerialWrapper
 
 from flask import Flask, render_template, request
-app = Flask(__name__)
 
-led_changer = SingleLED((0, 0, 0, 0))
+# Initialize
+app = Flask(__name__)
+ser = SerialWrapper(sys.argv[1])
+
+led_changer = SingleLED(ser, (0, 0, 0, 0))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
