@@ -1,45 +1,21 @@
-import serial
 import ctypes
-import io
 import traceback
 import signal
 import sys
+from serial_wrapper import SerialWrapper
 
 dbprint = print if 'debug' in sys.argv else lambda *args, **kwargs: None
 
-class SerialMockup:
-    def __init__(self):
-        dbprint('Using SerialMockup')
-        self.buf = io.BytesIO()
-
-    def write(self, byte):
-        self.buf.write(bytes(byte))
-        dbprint('write', bytes(byte))
-
-    def readline(self):
-        val = self.buf.getvalue()
-        dbprint(val.__repr__())
-        dbprint('read', val)
-        self.buf = io.BytesIO()
-
-    def close(self):
-        pass
-
-class SerialLEDChanger:
-    def __init__(self, alpha=None):
+class LEDChanger:
+    def __init__(self, serial_wrapper, alpha=None):
         # Generators for indefinite color
         self.colors = None
         self.delays = None
         self.dones = []
         self.queue = []
         self.alpha = alpha
+        self.ser = serial_wrapper
         signal.signal(signal.SIGALRM, self._handler)
-        try:
-            #  self.ser = serial.Serial('/dev/cu.usbmodem1421', 9600)
-            self.ser = serial.Serial('/dev/ttyACM1', 9600)
-        except serial.serialutil.SerialException:
-            dbprint('tb',traceback.format_tb())
-            self.ser = SerialMockup()
         self.active = False
 
     def _handler(self, signum, frame):
