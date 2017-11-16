@@ -3,20 +3,23 @@ import ctypes
 import io
 import traceback
 import signal
+import sys
+
+dbprint = print if 'debug' in sys.argv else lambda *args, **kwargs: None
 
 class SerialMockup:
     def __init__(self):
-        print('Using SerialMockup')
+        dbprint('Using SerialMockup')
         self.buf = io.BytesIO()
 
     def write(self, byte):
         self.buf.write(bytes(byte))
-        print('write', bytes(byte))
+        dbprint('write', bytes(byte))
 
     def readline(self):
         val = self.buf.getvalue()
-        print(val.__repr__())
-        print('read', val)
+        dbprint(val.__repr__())
+        dbprint('read', val)
         self.buf = io.BytesIO()
 
     def close(self):
@@ -34,18 +37,19 @@ class SerialLEDChanger:
             #  self.ser = serial.Serial('/dev/cu.usbmodem1421', 9600)
             self.ser = serial.Serial('/dev/ttyACM0', 9600)
         except serial.serialutil.SerialException:
-            print('tb',traceback.format_tb())
+            dbprint('tb',traceback.format_tb())
             self.ser = SerialMockup()
         self.active = False
 
     def _handler(self, signum, frame):
-        print('handled!')
+        dbprint('handled!')
         try:
-            print('readline', self.ser.readline())
+            incoming = self.ser.readline()
+            dbprint('readline', incoming)
             next_color = next(self.colors)
             next_delay = next(self.delays)
             self.queue.insert(0, (next_color, next_delay))
-            print('queuing', next_color, next_delay)
+            dbprint('queuing', next_color, next_delay)
         except StopIteration:
             self.stop()
         else:
@@ -56,10 +60,10 @@ class SerialLEDChanger:
         if self.alpha != None:
             next_color += alpha
         color = list(color)
-        print('sending', color, delay)
+        dbprint('sending', color, delay)
         bytes_send = (ctypes.c_ubyte * len(color))(*color)
         self.ser.write(bytes_send)
-        print('sent', color, delay)
+        dbprint('sent', color, delay)
         signal.setitimer(signal.ITIMER_REAL, delay)
 
     def start(self):
@@ -70,7 +74,7 @@ class SerialLEDChanger:
             pass
 
     def stop(self):
-        print('stopped')
+        dbprint('stopped')
         self.active = False
         while len(self.queue) > 0:
             self._send()

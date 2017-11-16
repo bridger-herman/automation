@@ -5,7 +5,7 @@ class SingleLED(SerialLEDChanger):
         if len(color) != 4 and alpha == None:
             raise ValueError('Must have alpha channel')
         super().__init__(alpha)
-        self.delays = iter([1.0])
+        self.delays = iter([0.1])
         self.colors = iter([color])
 
 if __name__ == '__main__':
