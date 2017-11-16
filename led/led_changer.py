@@ -30,12 +30,13 @@ class SerialLEDChanger:
         # Generators for indefinite color
         self.colors = None
         self.delays = None
+        self.dones = []
         self.queue = []
         self.alpha = alpha
         signal.signal(signal.SIGALRM, self._handler)
         try:
             #  self.ser = serial.Serial('/dev/cu.usbmodem1421', 9600)
-            self.ser = serial.Serial('/dev/ttyACM0', 9600)
+            self.ser = serial.Serial('/dev/ttyACM1', 9600)
         except serial.serialutil.SerialException:
             dbprint('tb',traceback.format_tb())
             self.ser = SerialMockup()
@@ -64,6 +65,7 @@ class SerialLEDChanger:
         bytes_send = (ctypes.c_ubyte * len(color))(*color)
         self.ser.write(bytes_send)
         dbprint('sent', color, delay)
+        self.dones.append((color, delay))
         signal.setitimer(signal.ITIMER_REAL, delay)
 
     def start(self):
@@ -78,14 +80,14 @@ class SerialLEDChanger:
         self.active = False
         while len(self.queue) > 0:
             self._send()
+        self.reset()
         signal.setitimer(signal.ITIMER_REAL, 0)
+
+    def reset(self):
+        '''Reset the colors so we can loop if needed, implemented by subclass'''
+        # for color, delay in self.dones: ...
+        return None
 
     def __del__(self):
         self.stop()
         self.ser.close()
-
-if __name__ == '__main__':
-    s = SerialLEDChanger()
-    s.colors = ((i, i, i, i) for i in range(0, 255, 49))
-    s.delays = (0.5 for i in range(6))
-    s.start()
