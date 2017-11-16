@@ -1,13 +1,30 @@
-$def with (form)
-
+<!DOCTYPE html>
 <html>
-<head>
-  <title>Home Server</title>
-</head>
-<body>
-  <form class="main" name="main" method="post">
-  $:form.render()
-  <input type="submit">
-  </form>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>Simple</title>
+  </head>
+  <body>
+    <form method="post">
+      <div>
+        <label for="red">Red ({{red_value}}):</label>
+        <input type="range" name="red" value="{{red_value}}">
+      </div>
+      <div>
+        <label for="green">Green ({{green_value}}):</label>
+        <input type="range" name="green" value="{{green_value}}">
+      </div>
+      <div>
+        <label for="blue">Blue ({{blue_value}}):</label>
+        <input type="range" name="blue" value="{{blue_value}}">
+      </div>
+      <div>
+        <label for="white">White ({{white_value}}):</label>
+        <input type="range" name="white" value="{{white_value}}">
+      </div>
+      <div>
+        <input type="submit">
+      </div>
+    </form>
+  </body>
 </html>

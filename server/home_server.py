@@ -1,31 +1,23 @@
-import web
-import serial
+import sys
+sys.path.append('../led')
+from led_single import SingleLED
 
-#  ser = serial.Serial('/dev/cu.usbmodem1421', 9600)
-render = web.template.render('templates/')
-urls = ('/', 'index')
+from flask import Flask, render_template, request
+app = Flask(__name__)
 
-formy = web.form.Form(
-    web.form.Textbox(name='red', value='0')
-)
-
-class index:
-    def __init__(self):
-        print('initialized')
-
-    def GET(self):
-        return render.index(formy())
-
-    def POST(self):
-        f = formy()
-        print('posted')
-        print(f)
-        print('value', f['red'].value)
-
-
-    def __del__(self):
-        print('del')
+@app.route('/', methods=['GET', 'POST'])
+def form():
+    if len(request.form) > 0:
+        led_vals = [int(v) for k, v in request.form.items()]
+        SingleLED(led_vals).start()
+        return render_template('index.html',
+                red_value=request.form['red'],
+                green_value=request.form['green'],
+                blue_value=request.form['blue'],
+                white_value=request.form['white']
+        )
+    else:
+        return render_template('index.html')
 
 if __name__ == "__main__":
-    app = web.application(urls, globals())
-    app.run()
+    app.run(host='0.0.0.0')
