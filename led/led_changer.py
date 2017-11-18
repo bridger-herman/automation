@@ -9,8 +9,8 @@ dbprint = print if 'debug' in sys.argv else lambda *args, **kwargs: None
 class LEDChanger:
     def __init__(self, serial_wrapper, alpha=None):
         # Generators for indefinite color
-        self.colors = None
-        self.delays = None
+        self.colors = iter([])
+        self.delays = iter([])
         self.dones = []
         self.queue = []
         self.alpha = alpha
@@ -60,9 +60,8 @@ class LEDChanger:
         signal.setitimer(signal.ITIMER_REAL, 0)
 
     def reset(self):
-        '''Reset the colors so we can loop if needed, implemented by subclass'''
-        # for color, delay in self.dones: ...
-        return None
+        colors, delays = zip(*self.dones)
+        self.colors, self.delays = iter(colors), iter(delays)
 
     def __del__(self):
         self.stop()

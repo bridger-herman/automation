@@ -11,11 +11,6 @@ class SingleLED(LEDChanger):
     def set_color(self, color):
         self.colors = iter([color])
 
-    def reset(self):
-        for color, delay in self.dones:
-            self.delays = iter([delay])
-            self.colors = iter([color])
-
 if __name__ == '__main__':
     s = SingleLED((255, 0, 100, 0))
     s.start()
