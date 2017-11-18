@@ -2,3 +2,14 @@ form {
   display: flex;
   flex-direction: column;
 }
+form * {
+  padding: 5px 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.color-box {
+  width: 4ex;
+  height: 100%;
+  border: black 1px solid;
+}

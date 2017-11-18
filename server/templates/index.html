@@ -2,38 +2,41 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
+    <link rel="stylesheet" href="../static/css/master.css">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}"> -->
+    <!-- TODO useful? https://stackoverflow.com/questions/40312216/converting-rgb-to-rgbw -->
     <title>Simple</title>
   </head>
   <body>
-    <form method="post">
-      <div>
-        <label for="red">Red:</label>
-        <input class="color-input" type="range" name="red" value="{{red_value}}" min="0" max="255">
-        <p>({{red_value}})</p>
-      </div>
-      <div>
-        <label for="green">Green:</label>
-        <input class="color-input" type="range" name="green" value="{{green_value}}" min="0" max="255">
-        <p>({{green_value}})</p>
-      </div>
-      <div>
-        <label for="blue">Blue:</label>
-        <input class="color-input" type="range" name="blue" value="{{blue_value}}" min="0" max="255">
-        <p>({{blue_value}})</p>
-      </div>
-      <div>
-        <label for="white">White:</label>
-        <input class="color-input" type="range" name="white" value="{{white_value}}" min="0" max="255">
-        <p>({{white_value}})</p>
-      </div>
-      <div>
-        <input type="submit">
-      </div>
-    </form>
+    <div class="led-input-container" id="single-led">
+      <form method="post">
+        <div>
+          <div class="color-box" data-color="#ff0000"></div>
+          <input class="color-input" type="range" name="red" value="{{red_value}}" min="0" max="255">
+          <div>({{red_value}})</div>
+        </div>
+        <div>
+          <div class="color-box" data-color="#00ff00"></div>
+          <input class="color-input" type="range" name="green" value="{{green_value}}" min="0" max="255">
+          <div>({{green_value}})</div>
+        </div>
+        <div>
+          <div class="color-box" data-color="#0000ff"></div>
+          <input class="color-input" type="range" name="blue" value="{{blue_value}}" min="0" max="255">
+          <div>({{blue_value}})</div>
+        </div>
+        <div>
+          <div class="color-box" data-color="#ffffff"></div>
+          <input class="color-input" type="range" name="white" value="{{white_value}}" min="0" max="255">
+          <div>({{white_value}})</div>
+        </div>
+      </form>
+    </div>
+
     <script
         src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
     </script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script type="text/javascript" src="../static/js/index.js"></script>
+    <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script> -->
   </body>
 </html>
