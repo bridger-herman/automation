@@ -1,15 +1,22 @@
-form {
-  display: flex;
-  flex-direction: column;
+.led-input-container {
+  width: 45%;
 }
-form * {
+.led-input-row * {
   padding: 5px 0;
   display: inline-block;
   vertical-align: middle;
 }
 
-.color-box {
+.color-preview-box {
   width: 4ex;
   height: 100%;
+  border: black 1px solid;
+}
+
+.color-mixer-box {
+  display: inline-block;
+  height: 20px;
+  width: 100%;
+  background-color: blue;
   border: black 1px solid;
 }
