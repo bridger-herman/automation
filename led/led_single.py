@@ -1,10 +1,10 @@
 from led_changer import LEDChanger
 
 class SingleLED(LEDChanger):
-    def __init__(self, serial_wrapper, color=(0, 0, 0, 0), alpha=None):
-        if len(color) != 4 and alpha == None:
-            raise ValueError('Must have alpha channel')
-        super().__init__(serial_wrapper, alpha)
+    def __init__(self, serial_wrapper, color=(0, 0, 0, 0), white=None):
+        if len(color) != 4 and white == None:
+            raise ValueError('Must have white channel')
+        super().__init__(serial_wrapper, white)
         self.delays = iter([0.1])
         self.colors = iter([color])
 

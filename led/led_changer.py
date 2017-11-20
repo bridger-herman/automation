@@ -6,14 +6,16 @@ from serial_wrapper import SerialWrapper
 
 dbprint = print if 'debug' in sys.argv else lambda *args, **kwargs: None
 
+NUM_COLORS = 4
+
 class LEDChanger:
-    def __init__(self, serial_wrapper, alpha=None):
+    def __init__(self, serial_wrapper, white=None):
         # Generators for indefinite color
         self.colors = iter([])
         self.delays = iter([])
         self.dones = []
         self.queue = []
-        self.alpha = alpha
+        self.white = white
         self.ser = serial_wrapper
         signal.signal(signal.SIGALRM, self._handler)
         self.active = False
@@ -34,8 +36,8 @@ class LEDChanger:
 
     def _send(self):
         color, delay = self.queue.pop()
-        if self.alpha != None:
-            next_color += alpha
+        if self.white != None:
+            next_color += white
         color = list(color)
         dbprint('sending', color, delay)
         bytes_send = (ctypes.c_ubyte * len(color))(*color)
@@ -60,8 +62,9 @@ class LEDChanger:
         signal.setitimer(signal.ITIMER_REAL, 0)
 
     def reset(self):
-        colors, delays = zip(*self.dones)
-        self.colors, self.delays = iter(colors), iter(delays)
+        if self.dones:
+            colors, delays = zip(*self.dones)
+            self.colors, self.delays = iter(colors), iter(delays)
 
     def __del__(self):
         self.stop()
