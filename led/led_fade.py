@@ -10,9 +10,13 @@ class LEDLinearFade(LEDChanger):
             color1: RGBW start color
             color2: RGBW end color
             duration: Duration of fade, in seconds
-            resolution: Resolution of fade (how many times to divide `duration` into)
+            resolution: Resolution of fade (how many times to divide
+                    `duration` into)
+            white: Constant color to use for white (if none, assuming color1
+                    and color2 have white)
         '''
-        if any([len(color1) != NUM_COLORS, len(color2) != NUM_COLORS]) and white == None:
+        if any([len(color1) != NUM_COLORS, len(color2) != NUM_COLORS]) and \
+                white == None:
             raise ValueError('Must have white channel')
         super().__init__(serial_wrapper, white)
         self.start_color = color1
@@ -22,13 +26,15 @@ class LEDLinearFade(LEDChanger):
         self.colors, self.delays = self._get_iterators()
 
     def _get_iterators(self):
-        color_diff = [self.end_color[i] - self.start_color[i] for i in range(NUM_COLORS)]
+        color_diff = [self.end_color[i] - self.start_color[i] \
+                for i in range(NUM_COLORS)]
         color_step = [d/(self.resolution - 1) for d in color_diff]
         delays = iter([self.duration/self.resolution]*self.resolution)
-        colors = iter([[int(self.start_color[i] + n*color_step[i] + 0.5) for i in range(NUM_COLORS)] for n in range(self.resolution)])
+        colors = iter([[int(self.start_color[i] + n*color_step[i] + 0.5) \
+                for i in range(NUM_COLORS)] for n in range(self.resolution)])
         return colors, delays
 
 if __name__ == '__main__':
     from serial_wrapper import SerialMockup
-    l = LEDLinearFade(SerialMockup(), (0, 0, 0, 0), (255, 255, 255, 255), 1, 4)
+    l = LEDLinearFade(SerialMockup(), (0, 0, 0, 0), (4, 8, 4, 4), 1, 5)
     l.start()
