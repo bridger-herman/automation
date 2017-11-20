@@ -21,7 +21,7 @@ class LEDLinearFade(LEDChanger):
         self.duration = duration
         self.resolution = resolution
         self.colors, self.delays = self._get_iterators()
-        self._verify()
+        #  self._verify()
 
     def _get_iterators(self):
         color_diff = [self.end_color[i] - self.start_color[i] \
@@ -33,6 +33,11 @@ class LEDLinearFade(LEDChanger):
         return colors, delays
 
 if __name__ == '__main__':
-    from serial_wrapper import SerialMockup
-    l = LEDLinearFade(SerialMockup(), (0, 0, 0, 0), (4, 8, 4, 4), 1, 5)
+    from serial_wrapper import SerialMockup, SerialWrapper
+    #  l = LEDLinearFade(SerialWrapper('/dev/ttyACM0'), (0, 0, 0, 0), \
+            #  (255, 0, 130, 0), 5, 50)
+    l = LEDLinearFade(SerialWrapper('/dev/ttyACM0'), \
+            (255, 0, 130, 0), \
+            (255, 25, 0, 0), \
+            5, 50)
     l.start()
