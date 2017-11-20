@@ -3,10 +3,10 @@ import traceback
 import signal
 import sys
 from serial_wrapper import SerialWrapper
+from functools import reduce
 
 dbprint = print if 'debug' in sys.argv else lambda *args, **kwargs: None
-
-NUM_COLORS = 4
+MAX_COLORS = 4
 
 class LEDChanger:
     def __init__(self, serial_wrapper, white=None):
@@ -19,6 +19,14 @@ class LEDChanger:
         self.ser = serial_wrapper
         signal.signal(signal.SIGALRM, self._handler)
         self.active = False
+        self.num_colors = MAX_COLORS
+
+    def _verify(self):
+        if all([len(color) != MAX_COLORS for color in self.colors]) and \
+                self.white == None:
+            raise ValueError('Must have white channel')
+        print(list(self.colors))
+
 
     def _handler(self, signum, frame):
         dbprint('handled!')
