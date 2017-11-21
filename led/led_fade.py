@@ -1,4 +1,4 @@
-from led_changer import LEDChanger 
+from led_changer import LEDChanger
 
 class LEDLinearFade(LEDChanger):
     def __init__(self, serial_wrapper, color1=(0, 0, 0, 0), color2=(0, 0, 0, 0),
@@ -20,8 +20,8 @@ class LEDLinearFade(LEDChanger):
         self.end_color = color2
         self.duration = duration
         self.resolution = resolution
+        self.num_colors = len(color1)
         self.colors, self.delays = self._get_iterators()
-        #  self._verify()
 
     def _get_iterators(self):
         color_diff = [self.end_color[i] - self.start_color[i] \
@@ -34,10 +34,8 @@ class LEDLinearFade(LEDChanger):
 
 if __name__ == '__main__':
     from serial_wrapper import SerialMockup, SerialWrapper
-    #  l = LEDLinearFade(SerialWrapper('/dev/ttyACM0'), (0, 0, 0, 0), \
-            #  (255, 0, 130, 0), 5, 50)
-    l = LEDLinearFade(SerialWrapper('/dev/ttyACM0'), \
-            (255, 0, 130, 0), \
-            (255, 25, 0, 0), \
-            5, 50)
+    l = LEDLinearFade(SerialWrapper('/dev/tty.usbmodem1411'), \
+            (255, 0, 130), \
+            (255, 25, 0), \
+            5, 50, white=50)
     l.start()
