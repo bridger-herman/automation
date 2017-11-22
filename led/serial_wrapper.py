@@ -2,18 +2,22 @@ import serial
 import io
 
 class SerialMockup:
-    def __init__(self):
-        print('Using SerialMockup')
+    def __init__(self, db=True):
+        self.db = db
+        if self.db:
+            print('Using SerialMockup')
         self.buf = io.BytesIO()
 
     def write(self, byte):
         self.buf.write(bytes(byte))
-        print('write', bytes(byte))
+        if self.db:
+            print('write', bytes(byte))
 
     def readline(self):
         val = self.buf.getvalue()
-        print(val.__repr__())
-        print('read', val)
+        if self.db:
+            print(val.__repr__())
+            print('read', val)
         self.buf = io.BytesIO()
 
     def close(self):
