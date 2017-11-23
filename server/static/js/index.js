@@ -38,16 +38,13 @@ function getValueDisplay(value) {
 
 function setMixedColorRGB(inputContainer) {
   let inputRows = $('#' + inputContainer + ' .led-input-row');
-  let rgb = [0, 0, 0];
+  let rgbw = [0, 0, 0, 0];
   inputRows.each(function (i) {
     let colorPreview = $(inputRows[i]).find('.color-preview-box').attr('data-color');
     let value = parseInt($(inputRows[i]).find('.color-input').val());
-    let nonzero = nonzeroIndex(colorPreview);
-    if (nonzero >= 0) {
-      rgb[nonzero] = value;
-    }
+    rgbw[i] = value;
   });
-  $('#' + inputContainer).find('.color-mixer-box').css('background-color', rgbToHex(...rgb));
+  $('#' + inputContainer).find('.color-mixer-box').css('background-color', rgbToHex(...rgbwToRGB(...rgbw)));
 }
 
 document.onload = init();
