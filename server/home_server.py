@@ -1,13 +1,17 @@
 import sys
 sys.path.append('../led')
-from led_single import SingleLED
+from led_single import LEDSingle
 from led_fade import LEDLinearFade
 from serial_wrapper import SerialWrapper, SerialMockup
 from flask import Flask, render_template, request
 
 class HomeServer:
-    def __init__(self, host=None):
-        self.ser = SerialMockup(db=False)
+    def __init__(self, host=None, arduino=None):
+        try:
+            self.ser = SerialWrapper(arduino)
+        except:
+            self.ser = SerialMockup(db=False)
+
         self.host = host
         self.app = Flask(__name__)
         self.current_color = [0, 0, 0, 0]
@@ -39,5 +43,6 @@ class HomeServer:
             self.app.run(host=self.host)
 
 if __name__ == "__main__":
-    s = HomeServer()
+    server_args = [sys.argv[i] if i < len(sys.argv) else None for i in range(1, 3)]
+    s = HomeServer(*server_args)
     s.run()
