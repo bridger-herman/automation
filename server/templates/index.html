@@ -7,13 +7,16 @@
     <title>Home Server</title>
   </head>
   <body>
-    <div class="led-input-container" id="single-led">
+    <form method="post" class="led-input-container" id="single-led">
       <div class="color-mixer-box"></div>
 
-      <input class="wheel-color-picker" type="text" value="#ffffff"
+      <!-- <input class="wheel-color-picker" type="text" value="#ffffff"
+      data-wheelcolorpicker data-wcp-layout="block" data-wcp-sliders="wva"
+      data-wcp-cssClass="color-block" data-wcp-autoResize="false" /> -->
+      <input class="wheel-color-picker" type="text" value="{{wheel_color_value}}"
       data-wheelcolorpicker data-wcp-layout="block" data-wcp-sliders="wva"
       data-wcp-cssClass="color-block" data-wcp-autoResize="false" />
-    </div>
+    </form>
 
 
 

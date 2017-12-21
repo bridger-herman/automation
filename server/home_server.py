@@ -5,9 +5,12 @@ from led_fade import LEDLinearFade
 from serial_wrapper import SerialWrapper, SerialMockup
 from flask import Flask, render_template, request
 
+def rgbw_to_hex(r, g, b, w):
+    return '#{:>02}{:>02}{:>02}{:>02}'.format(*map(lambda v: v[2:], [hex(r), hex(g), hex(b), hex(w)]))
+
 class HomeServer:
     def __init__(self, host=None, arduino=None):
-        self.ser = SerialWrapper(arduino) if arduino is not None else SerialMockup()
+        self.ser = SerialWrapper(arduino) if arduino is not None else SerialMockup(db=False)
         self.host = host
         self.app = Flask(__name__)
         self.current_color = [0, 0, 0, 0]
@@ -20,15 +23,12 @@ class HomeServer:
     def index(self):
         if len(request.form) > 0:
             led_vals = [int(v) for k, v in request.form.items()]
+            hx = rgbw_to_hex(*led_vals)
+            print(hx)
             self.led_obj.__init__(self.ser, self.current_color, led_vals, 1, 30)
             self.led_obj.start()
             self.current_color = led_vals
-            return render_template('index.html',
-                    red_value=request.form['red'],
-                    green_value=request.form['green'],
-                    blue_value=request.form['blue'],
-                    white_value=request.form['white']
-            )
+            return render_template('index.html', wheel_color_value=hx)
         else:
             return render_template('index.html')
 
