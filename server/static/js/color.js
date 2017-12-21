@@ -47,11 +47,6 @@ function hexToRgb(hex) {
     parseInt(result[2], 16),
     parseInt(result[3], 16)
   ] : null;
-  // return result ? {
-  //     r: parseInt(result[1], 16),
-  //     g: parseInt(result[2], 16),
-  //     b: parseInt(result[3], 16)
-  // } : null;
 }
 
 function rgbToHex(r, g, b) {
@@ -64,22 +59,4 @@ function floatTo255(value) {
 
 function byteToFloat(value) {
   return value/255;
-}
-
-function nonzeroIndex(hex) {
-  let rgb = hexToRgb(hex);
-  let count = 0;
-  let index = -1;
-  for (var i = 0; i < rgb.length; i++) {
-    if (rgb[i] != 0) {
-      count++;
-      index = i;
-    }
-  }
-  if (count === 1) {
-    return index;
-  }
-  else {
-    return -1;
-  }
 }
