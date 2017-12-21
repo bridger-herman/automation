@@ -7,11 +7,7 @@ from flask import Flask, render_template, request
 
 class HomeServer:
     def __init__(self, host=None, arduino=None):
-        try:
-            self.ser = SerialWrapper(arduino)
-        except:
-            self.ser = SerialMockup(db=False)
-
+        self.ser = SerialWrapper(arduino) if arduino is not None else SerialMockup()
         self.host = host
         self.app = Flask(__name__)
         self.current_color = [0, 0, 0, 0]
