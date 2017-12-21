@@ -58,6 +58,10 @@ function rgbToHex(r, g, b) {
   return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
+function floatTo255(value) {
+  return parseInt(value*255);
+}
+
 function nonzeroIndex(hex) {
   let rgb = hexToRgb(hex);
   let count = 0;

@@ -3,12 +3,21 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../static/css/master.css">
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}"> -->
-    <!-- TODO useful? https://stackoverflow.com/questions/40312216/converting-rgb-to-rgbw -->
+    <link type="text/css" rel="stylesheet" href="../static/jquery-wheelcolorpicker/css/wheelcolorpicker.css" />
     <title>Home Server</title>
   </head>
   <body>
     <div class="led-input-container" id="single-led">
+      <div class="color-mixer-box"></div>
+
+      <input class="wheel-color-picker" type="text" value="#ffffff"
+      data-wheelcolorpicker data-wcp-layout="block" data-wcp-sliders="wva"
+      data-wcp-cssClass="color-block" data-wcp-autoResize="false" />
+    </div>
+
+
+
+    <!-- <div class="led-input-container" id="single-led">
       <form method="post">
         <div class="led-input-row"
             data-hex="#ff0000"
@@ -29,13 +38,16 @@
             data-hex="#ffffff"
             data-name="white"
             data-value="{{white_value}}">
-        </div>
-        <div class="color-mixer-box"></div>
+        </div> -->
       </form>
     </div>
     <script
         src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
     </script>
+    <script type="text/javascript"
+      src="../static/jquery-wheelcolorpicker/jquery.wheelcolorpicker.js">
+    </script>
+
     <script type="text/javascript" src="../static/js/color.js"></script>
     <script type="text/javascript" src="../static/js/index.js"></script>
     <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script> -->
