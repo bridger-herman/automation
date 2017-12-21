@@ -20,9 +20,14 @@ class HomeServer:
     def _setup_routes(self):
         self.app.route('/', methods=['GET', 'POST'])(self.index)
 
+    def test(self):
+        print(request.form)
+        return render_template('index.html')
+
     def index(self):
         if len(request.form) > 0:
             led_vals = [int(v) for k, v in request.form.items()]
+            print(led_vals)
             hx = rgbw_to_hex(*led_vals)
             print(hx)
             self.led_obj.__init__(self.ser, self.current_color, led_vals, 1, 30)

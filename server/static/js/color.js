@@ -62,6 +62,10 @@ function floatTo255(value) {
   return parseInt(value*255);
 }
 
+function byteToFloat(value) {
+  return value/255;
+}
+
 function nonzeroIndex(hex) {
   let rgb = hexToRgb(hex);
   let count = 0;
