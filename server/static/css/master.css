@@ -1,6 +1,6 @@
 /* COLORS:
  * #161616
- * #737373
+ * #737373DD
  */
 
 .led-input-container {
@@ -8,7 +8,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 .color-input {
@@ -21,7 +20,7 @@
 }
 
 .wheel-color-picker {
-  height: 500px !important;
+  height: calc(60vh*0.48) !important;
   width: 60% !important;
   border-radius: 0;
 }
