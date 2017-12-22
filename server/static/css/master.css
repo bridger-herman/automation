@@ -1,16 +1,28 @@
 .led-input-container {
-  width: 45%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.color-input {
+  width: 95%;
+}
+
+.color-preview-box {
+  width: 4%;
+  height: 100%;
+  border: black 1px solid;
 }
 .led-input-row * {
+  width: 100%;
   padding: 5px 0;
   display: inline-block;
   vertical-align: middle;
 }
-
-.color-preview-box {
-  width: 4ex;
-  height: 100%;
-  border: black 1px solid;
+.wheel-color-picker {
+  height: 400px !important;
+  width: 50% !important;
 }
 
 .color-mixer-box {
@@ -19,8 +31,5 @@
   width: 100%;
   background-color: blue;
   border: black 1px solid;
-}
-
-.color-input {
-  width: 85%;
+  margin: 5px;
 }
