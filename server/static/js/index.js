@@ -1,33 +1,36 @@
 function init() {
-  // Set up direct RGBW input sliders
-  setupInputRows();
   // Set up the color preview boxes
   setupColorPreviews();
-  // Set up RGBW submit
-  $('.color-input').on('change', function(event) {
-    $(event.target).parent().parent().submit();
-  })
+
   // Set up color mixer
   $('.wheel-color-picker').on('sliderup', function(event){
     setSliderRGBW($(event.target).parent().parent());
     $(event.target).parent().parent().submit();
   });
+
+  // Set up LED input containers
   let containers = $('.led-input-container');
   containers.each(function (i) {
     let colorObj = $(containers[i]).find('.wheel-color-picker').wheelColorPicker('getColor');
-    let currentRGBA = colorObjToArray(colorObj); // TODO assumes there's only one set of color input rows
+    let currentRGBA = colorObjToArray(colorObj);
     let rgbw = [0, 0, 0, 0];
     for (var j = 0; j < currentRGBA.length; j++) {
       rgbw[j] = floatTo255(currentRGBA[j]);
     }
     updateColorPreview(containers[i], rgbw);
+    // Set up direct RGBW input sliders
+    setupInputRows(containers[i]);
+    // Set up RGBW input submit
+    $('.color-input').on('change', function(event) {
+      $(event.target).parent().parent().submit();
+    })
   });
 }
 
-function setupInputRows() {
-  let inputRows = $('.led-input-row');
+function setupInputRows(inputContainer) {
+  let inputRows = $(inputContainer).find('.led-input-row');
   let colorObj = $(inputRows).parent().find('.wheel-color-picker').wheelColorPicker('getColor');
-  let currentRGBA = colorObjToArray(colorObj); // TODO assumes there's only one set of color input rows
+  let currentRGBA = colorObjToArray(colorObj);
   inputRows.each(function (i) {
     let hex = $(inputRows[i]).attr('data-hex');
     let name = $(inputRows[i]).attr('data-name');
