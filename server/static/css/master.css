@@ -25,11 +25,20 @@
   border-radius: 0;
 }
 
-.color-mixer-box {
+.color-preview {
   display: inline-block;
   height: 40px;
   width: 70%;
-  background-color: blue;
   border: black 1px solid;
   margin: 5px;
+}
+.color-preview * {
+  display: inline-block;
+  height: 100%
+}
+.rgb-preview {
+  width: 80%;
+}
+.w-preview {
+  width: 20%;
 }

@@ -53,10 +53,18 @@ function rgbToHex(r, g, b) {
   return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
 
+function valueToAllHex(value) {
+  return '#' + ((1 << 24) + (value << 16) + (value << 8) + value).toString(16).slice(1);
+}
+
 function floatTo255(value) {
   return parseInt(value*255);
 }
 
 function byteToFloat(value) {
   return value/255;
+}
+
+function colorObjToArray(colorObj) {
+  return [colorObj.r, colorObj.g, colorObj.b, colorObj.a];
 }
