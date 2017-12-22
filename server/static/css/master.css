@@ -1,28 +1,38 @@
+/* COLORS:
+ * #161616
+ * #737373
+ */
+
 .led-input-container {
   width: 100%;
-  display: flex;
+  display: inline-block;
+  /*display: flex;
   flex-direction: column;
   align-items: center;
+  flex-wrap: wrap;*/
 }
 
 .color-input {
-  width: 95%;
+  width: 49%;
 }
 
-.color-preview-box {
+
+
+/*.color-preview-box {
   width: 4%;
   height: 100%;
   border: black 1px solid;
 }
 .led-input-row * {
-  width: 100%;
+  width: 49%;
   padding: 5px 0;
   display: inline-block;
   vertical-align: middle;
-}
+}*/
 .wheel-color-picker {
   height: 400px !important;
-  width: 50% !important;
+  width: 49% !important;
+  border-radius: 0;
 }
 
 .color-mixer-box {

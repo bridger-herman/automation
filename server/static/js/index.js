@@ -22,12 +22,16 @@ function setupInputRows() {
   inputRows.each(function (i) {
     let hex = $(inputRows[i]).attr('data-hex');
     let name = $(inputRows[i]).attr('data-name');
-    $(inputRows[i]).append(getColorPreview(hex));
-    $(inputRows[i]).append(getColorInput(name, 255)); // Default to #ffffffff
+    // $(inputRows[i]).append(getColorPreview(hex));
+    $(inputRows[i]).append(getColorInput(name, 255, hex)); // Default to #ffffffff
   });
-  let boxes = $('.color-preview-box');
-  boxes.each(function(i) {
-    $(boxes[i]).css('background-color', $(boxes[i]).attr('data-color'));
+  // let boxes = $('.color-preview-box');
+  // boxes.each(function(i) {
+  //   $(boxes[i]).css('background-color', $(boxes[i]).attr('data-color'));
+  // });
+  let ranges = $('.color-input');
+  ranges.each(function(i) {
+    $(ranges[i]).css('background', $(ranges[i]).attr('data-color'));
   });
 }
 
@@ -61,10 +65,10 @@ function getColorPreview(color) {
   return '<div class="color-preview-box" data-color="' + color + '"></div>';
 }
 
-function getColorInput(name, value) {
+function getColorInput(name, value, color) {
   return '<input class="color-input" type="range" name="'
       + name + '" id="' + name + '" value="' + value +
-      '" min="0" max="255">';
+      '" min="0" max="255" data-color="' + color + '">';
 }
 
 document.onload = init();
