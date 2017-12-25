@@ -1,0 +1,40 @@
+.favorites {
+  border: solid 2px black;
+  width: 75%;
+  height: 40vh;
+}
+.favorites ul {
+  margin: 15px;
+  padding: 0;
+  height: 30vh;
+  overflow-y: scroll;
+}
+
+.favorites-header {
+  padding: 5px 15px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-bottom: solid 1px black;
+}
+.favorites-header h2 {
+  flex-grow: 1;
+  margin: 0;
+}
+.favorites-header button {
+  height: 100%;
+}
+.favorites-header button.load-selected {
+  flex-grow: 2;
+}
+
+.favorite-thumb {
+  display: inline-block;
+  text-align: center;
+  align-content: middle;
+  width: 15vw;
+  height: calc(15vw);
+  border: 1px solid black;
+  margin: 5px;
+}

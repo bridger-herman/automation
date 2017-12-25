@@ -1,5 +1,5 @@
-function makeFavorites() {
-  $('.favorites').
-}
-
-function makeHeader
+// function makeFavorites() {
+//   $('.favorites').
+// }
+//
+// function makeHeader
