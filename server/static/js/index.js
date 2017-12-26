@@ -3,7 +3,7 @@ function init() {
   setupColorPreviews();
 
   // Set up color mixer
-  $('.wheel-color-picker').on('sliderup', function(event){
+  $('.wheel-color-picker').on('sliderup', function(event) {
     setSliderRGBW($(event.target).parent().parent());
     $(event.target).parent().parent().submit();
   });
@@ -25,6 +25,8 @@ function init() {
       $(event.target).parent().parent().submit();
     })
   });
+
+  updateFavoriteThumbnails();
 }
 
 document.onload = init();

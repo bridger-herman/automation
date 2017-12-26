@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="../static/css/master.css">
     <link rel="stylesheet" href="../static/css/ranges.css">
+    <link rel="stylesheet" href="../static/css/favorites.css">
     <link type="text/css" rel="stylesheet" href="../static/jquery-wheelcolorpicker/css/wheelcolorpicker.css" />
     <title>Home Server</title>
   </head>
@@ -34,7 +35,27 @@
         <div class="color-preview"></div>
     </form>
 
-    <div class="favorites"></div>
+    <div class="favorites">
+      <div class="favorites-header">
+        <h2>Favorites</h2>
+        <button type="button" class="load-selected" name="load">[load]</button>
+        <button type="button" name="edit-favorite">[e]</button>
+        <button type="button" name="delete-favorite">[d]</button>
+      </div>
+      <ul>
+        <li class="favorite-thumb add-current" data-color="{{wheel_color_value}}">
+          <div class="add-symbol">
+            +
+          </div>
+          <div class="color-preview" data-rgb="#ff0000" data-w="dd">
+
+          </div>
+          <div class="color-description">
+            [Add color]
+          </div>
+        </li>
+      </ul>
+    </div>
 
     <script
       src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
