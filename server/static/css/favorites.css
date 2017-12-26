@@ -2,6 +2,7 @@
   border: solid 2px black;
   width: 75%;
   height: 40vh;
+  margin: 5px;
 }
 .favorites ul {
   margin: 15px;
