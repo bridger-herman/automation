@@ -1,8 +1,12 @@
 function updateFavoriteThumbnails() {
   let thumbs = $('.favorite-thumb');
   for (var i = 0; i < thumbs.length; i++) {
-    updateColorPreview(thumbs[i], [255, 0, 0, 221]);
-    console.log($(thumbs[i]).attr('data-color'));
+    let rgbw = colorHexToArray($(thumbs[i]).attr('data-color'));
+    console.log(rgbw);
+    if (rgbw) {
+      console.log('updating');
+      updateColorPreview(thumbs[i], rgbw);
+    }
   }
 }
 
