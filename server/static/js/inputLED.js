@@ -19,8 +19,8 @@ function setupColorPreviews() {
 }
 
 function updateColorPreview(inputContainer, rgbw) {
-  $(inputContainer).find('.color-preview').find('.rgb-preview').css('background-color', rgbToHex(...(rgbw.slice(0, -1))));
-  $(inputContainer).find('.color-preview').find('.w-preview').css('background-color', valueToAllHex(rgbw[3]));
+    $(inputContainer).find('.color-preview').not('.static').find('.rgb-preview').css('background-color', rgbToHex(...(rgbw.slice(0, -1))));
+    $(inputContainer).find('.color-preview').not('.static').find('.w-preview').css('background-color', valueToAllHex(rgbw[3]));
 }
 
 function setWheelRGBW(inputContainer) {
@@ -34,7 +34,6 @@ function setWheelRGBW(inputContainer) {
     floated[i] = byteToFloat(value);
   });
   $(inputContainer).find('.wheel-color-picker').wheelColorPicker('setRgba', ...floated);
-  // $(inputContainer).find('.color-preview').css('background-color', rgbToHex(...rgbw.slice(0, -1)));
   updateColorPreview(inputContainer, rgbw);
 }
 
@@ -47,7 +46,6 @@ function setSliderRGBW(inputContainer) {
     rgbw[i] = floatTo255(rgba[i]);
     $('#' + names[i]).val(rgbw[i]);
   }
-  // $(inputContainer).find('.color-preview').css('background-color', rgbToHex(...rgbw.slice(0, -1)));
   updateColorPreview(inputContainer, rgbw);
 }
 

@@ -4,8 +4,9 @@ function init() {
 
   // Set up color mixer
   $('.wheel-color-picker').on('sliderup', function(event) {
-    setSliderRGBW($(event.target).parent().parent());
-    $(event.target).parent().parent().submit();
+    let form = $(event.target).parents('.led-input-container');
+    setSliderRGBW($(form));
+    $(form).submit();
   });
 
   // Set up LED input containers
@@ -22,7 +23,7 @@ function init() {
     setupInputRows(containers[i]);
     // Set up RGBW input submit
     $('.color-input').on('change', function(event) {
-      $(event.target).parent().parent().submit();
+      $(event.target).parents('.led-input-container').submit();
     })
   });
 

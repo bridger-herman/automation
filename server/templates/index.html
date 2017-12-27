@@ -41,17 +41,20 @@
           <button type="button" name="edit-favorite">[e]</button>
           <button type="button" name="delete-favorite">[d]</button>
         </div>
-        <ul>
-          <li class="favorite-thumb" data-color="#00ee00dd">
-            <div class="color-preview">
-            </div>
+        <ul class="favorites-list" data-color-database="{{color_database}}">
+          <li class="favorite-thumb static selected" data-color="#00ee00dd">
+            <div class="color-preview static"></div>
             <div class="color-description">
               Greenish
             </div>
+          <li class="favorite-thumb static" data-color="#0000eedd">
+            <div class="color-preview static"></div>
+            <div class="color-description">
+              Blueish
+            </div>
           </li>
           <li class="favorite-thumb add-current" data-color="{{wheel_color_value}}">
-            <div class="color-preview">
-            </div>
+            <div class="color-preview"></div>
             <div class="color-description">
               +
             </div>
