@@ -32,6 +32,9 @@
   border: black 1px solid;
   margin: 5px;
 }
+.color-preview.small {
+  height: 2vh;
+}
 .color-preview * {
   display: inline-block;
   height: 100%
