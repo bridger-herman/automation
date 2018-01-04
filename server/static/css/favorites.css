@@ -25,6 +25,7 @@
 }
 .favorites-header button {
   height: 100%;
+  margin: 5px;
 }
 .favorites-header button.load-selected {
   flex-grow: 2;

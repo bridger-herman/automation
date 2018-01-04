@@ -5,7 +5,10 @@
     <link rel="stylesheet" href="../static/css/master.css">
     <link rel="stylesheet" href="../static/css/ranges.css">
     <link rel="stylesheet" href="../static/css/favorites.css">
-    <link type="text/css" rel="stylesheet" href="../static/jquery-wheelcolorpicker/css/wheelcolorpicker.css" />
+    <link type="text/css" rel="stylesheet"
+        href="../static/jquery-wheelcolorpicker/css/wheelcolorpicker.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet">
     <title>Home Server</title>
   </head>
   <body>
@@ -37,9 +40,12 @@
       <div class="favorites">
         <div class="favorites-header">
           <h2>Favorites</h2>
-          <button type="button" class="load-selected" name="load">[load]</button>
-          <button type="button" name="edit-favorite">[e]</button>
-          <button type="button" name="delete-favorite">[d]</button>
+          <!-- <button type="button" class="load-selected" name="load">[load]</button> -->
+          <button class="material-icons load-selected" type="button" id="edit-favorite">file_upload
+            <!-- <div class="color-preview"></div> -->
+          </button>
+          <button class="material-icons" type="button" id="edit-favorite">mode_edit</button>
+          <button class="material-icons" type="button" id="delete-favorite">delete</button>
         </div>
         <ul class="favorites-list" data-color-database="{{color_database}}">
           <li class="favorite-thumb static selected" data-color="#00ee00dd">
