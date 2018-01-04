@@ -27,8 +27,12 @@
   height: 100%;
   margin: 5px;
 }
-.favorites-header button.load-selected {
+.favorites-header .load-selected {
   flex-grow: 2;
+  align-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .favorite-thumb {
