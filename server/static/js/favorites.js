@@ -28,10 +28,6 @@ function updateFavoriteThumbnails() {
   }
 }
 
-function makeFavorites() {
-  $('.favorites').append();
-}
-
 // Make an HTML thumbnail for a particular color
 function makeThumb(color=[0, 0, 0, 0], addCurrent=false) {
   let rgb = rgbToHex
