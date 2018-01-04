@@ -20,8 +20,25 @@ function updateFavoriteThumbnails() {
 }
 
 function setupLoadSelected() {
-  let selected = $('.favorite-thumb.selected');
-  updateLoadSelected(selected);
+  let firstSelected = $('.favorite-thumb.selected');
+  updateLoadSelected(firstSelected);
+  let button = $('.load-selected button');
+  $(button).on('click', function(event) {
+    let selected = $('.favorite-thumb.selected');
+    let rgbw = colorHexToArray(selected.attr('data-color'));
+    if (!rgbw) {
+      return;
+    }
+    let container = $(event.target).parents('.led-input-container');
+    setSliderRGBW(container, rgbw);
+    let color = $(container).find('.wheel-color-picker').wheelColorPicker('color');
+    let names = ['red', 'green', 'blue', 'white'];
+    for (var i = 0; i < rgbw.length; i++) {
+      $('#' + names[i]).val(rgbw[i]);
+    }
+    updateColorPreview(container, rgbw);
+    container.submit();
+  });
 }
 
 function updateLoadSelected(selectedThumb) {
@@ -32,16 +49,6 @@ function updateLoadSelected(selectedThumb) {
   let rgbw = colorHexToArray(hex);
   $(selectedThumb).parents().find('.load-selected').not('.static').find('.rgb-preview').css('background-color', rgbToHex(...(rgbw.slice(0, -1))));
   $(selectedThumb).parents().find('.load-selected').not('.static').find('.w-preview').css('background-color', valueToAllHex(rgbw[3]));
-  // TODO transfer this to actual load button
-  // let container = $(event.target).parents('.led-input-container');
-  // setSliderRGBW(container, rgbw);
-  // let color = $(container).find('.wheel-color-picker').wheelColorPicker('color');
-  // let names = ['red', 'green', 'blue', 'white'];
-  // for (var i = 0; i < rgbw.length; i++) {
-  //   $('#' + names[i]).val(rgbw[i]);
-  // }
-  // updateColorPreview(container, rgbw);
-  // container.submit();
 }
 
 // Make an HTML thumbnail for a particular color
