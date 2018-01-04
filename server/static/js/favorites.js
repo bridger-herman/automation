@@ -8,15 +8,22 @@ function updateFavoriteThumbnails() {
     $(thumbs[i]).find('.rgb-preview').css('background-color', rgbToHex(...(rgbw.slice(0, -1))));
     $(thumbs[i]).find('.w-preview').css('background-color', valueToAllHex(rgbw[3]));
     $(thumbs[i]).on('click', function(event) {
-      let container = $(event.target).parents('.led-input-container');
-      setSliderRGBW(container, rgbw);
-      let color = $(container).find('.wheel-color-picker').wheelColorPicker('color');
-      let names = ['red', 'green', 'blue', 'white'];
-      for (var i = 0; i < rgbw.length; i++) {
-        $('#' + names[i]).val(rgbw[i]);
+      $(thumbs).removeClass('selected');
+      let parent = $(event.target);
+      while (!$(parent).hasClass('favorite-thumb')) {
+        parent = $(parent).parent();
       }
-      updateColorPreview(container, rgbw);
-      container.submit();
+      $(parent).addClass('selected');
+      // TODO transfer this to actual load button
+      // let container = $(event.target).parents('.led-input-container');
+      // setSliderRGBW(container, rgbw);
+      // let color = $(container).find('.wheel-color-picker').wheelColorPicker('color');
+      // let names = ['red', 'green', 'blue', 'white'];
+      // for (var i = 0; i < rgbw.length; i++) {
+      //   $('#' + names[i]).val(rgbw[i]);
+      // }
+      // updateColorPreview(container, rgbw);
+      // container.submit();
     });
   }
 }
