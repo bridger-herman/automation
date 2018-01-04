@@ -7,6 +7,9 @@ function updateFavoriteThumbnails() {
     }
     $(thumbs[i]).find('.rgb-preview').css('background-color', rgbToHex(...(rgbw.slice(0, -1))));
     $(thumbs[i]).find('.w-preview').css('background-color', valueToAllHex(rgbw[3]));
+    if ($(thumbs[i]).hasClass('add-current')) {
+      continue;
+    }
     $(thumbs[i]).on('click', function(event) {
       $(thumbs).removeClass('selected');
       let parent = $(event.target);
