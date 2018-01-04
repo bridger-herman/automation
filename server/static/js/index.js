@@ -28,6 +28,7 @@ function init() {
   });
 
   updateFavoriteThumbnails();
+  setupLoadSelected();
 }
 
 document.onload = init();
