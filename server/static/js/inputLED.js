@@ -19,6 +19,8 @@ function setupColorPreviews() {
 }
 
 function updateColorPreview(inputContainer, rgbw) {
+  // console.log(rgbToHex(...(rgbw.slice(0, -1))));
+  // console.log({{ wheel_color_value }});
   $(inputContainer).find('.color-preview').not('.static, .preview-selected').find('.rgb-preview').css('background-color', rgbToHex(...(rgbw.slice(0, -1))));
   $(inputContainer).find('.color-preview').not('.static, .preview-selected').find('.w-preview').css('background-color', valueToAllHex(rgbw[3]));
 }
