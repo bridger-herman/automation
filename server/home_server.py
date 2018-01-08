@@ -1,9 +1,12 @@
 import sys
+import json
 sys.path.append('../led')
 from led_single import LEDSingle
 from led_fade import LEDLinearFade
 from serial_wrapper import SerialWrapper, SerialMockup
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
+
+COLOR_DB = './data/color_database.json'
 
 def rgbw_to_hex(r, g, b, w):
     return '#{:>02}{:>02}{:>02}{:>02}'.format(*map(lambda v: v[2:], [hex(r), hex(g), hex(b), hex(w)]))
@@ -19,6 +22,23 @@ class HomeServer:
 
     def _setup_routes(self):
         self.app.route('/', methods=['GET', 'POST'])(self.index)
+        self.app.route('/home_server.py', methods=['GET', 'POST'])(self.thing)
+
+    # TODO change to resource
+    def thing(self):
+        print('hai')
+        r = request.get_json()
+        print(r)
+        print(r['nah'])
+        return "abc"
+
+    def _get_fav_db(self):
+        try:
+            with open(COLOR_DB) as db:
+                return json.load(db)
+        except:
+            print('DB error')
+            return ''
 
     def index(self):
         if len(request.form) > 0:
@@ -28,7 +48,9 @@ class HomeServer:
             self.led_obj.__init__(self.ser, self.current_color, led_vals, 1, 30)
             self.led_obj.start()
             self.current_color = led_vals
-            return render_template('index.html', wheel_color_value=hx)
+            return render_template('index.html',
+                    wheel_color_value=hx,
+                    color_database=self._get_fav_db())
         else:
             return render_template('index.html')
 
