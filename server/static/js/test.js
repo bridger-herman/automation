@@ -10,9 +10,9 @@
 // }
 $.ajax({
   url: "color_database",
-  type: "post",
+  type: "get",
   contentType: "application/json",
-  dataType: "text",
+  dataType: "json",
   data: JSON.stringify({nah:"wow"}, null, '\t'), // AHHHH stringify so many hours were wasted here. Kept getting 400 error https://stackoverflow.com/a/17082422
   success: function(response) {
     console.log('success');

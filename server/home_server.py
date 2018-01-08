@@ -1,29 +1,41 @@
 import sys
 import json
 sys.path.append('../led')
+from pathlib import Path
+from functools import partial
 from led_single import LEDSingle
 from led_fade import LEDLinearFade
 from serial_wrapper import SerialWrapper, SerialMockup
 from flask import Flask, render_template, request, jsonify
 from flask_restful import Resource, Api
 
-COLOR_DB = './data/color_database.json'
+DATA_DIR = Path('./data/')
+#color_database.json'
 
 def rgbw_to_hex(r, g, b, w):
     return '#{:>02}{:>02}{:>02}{:>02}'.format(*map(lambda v: v[2:], [hex(r), hex(g), hex(b), hex(w)]))
 
-class ColorDB(Resource):
-    def _get_fav_db(self):
+class JSONDB(Resource):
+    def __init__(self):
+        self.path = DATA_DIR.joinpath('color_database.json')
+    # def __init__(self, filename):
+        # self.path = DATA_DIR.joinpath(filename)
+
+    def _get_db(self):
         try:
-            with open(COLOR_DB) as db:
+            with open(str(self.path)) as db:
                 return json.load(db)
         except:
-            print('DB error')
-            return ''
+            print('Creating empty database')
+            fout = open(str(self.path), 'w')
+            fout.close()
+            return {}
 
     def get(self):
+        db = self._get_db()
         print('Get!')
-        return 'wow.'
+        return jsonify(db)
+
     def post(self):
         print('Post!')
         return 'mhmm'
@@ -40,7 +52,7 @@ class HomeServer:
 
     def _setup(self):
         self.app.route('/', methods=['GET', 'POST'])(self.index)
-        self.api.add_resource(ColorDB, '/color_database')
+        self.api.add_resource(JSONDB, '/color_database')
 
     def index(self):
         if len(request.form) > 0:
@@ -50,9 +62,7 @@ class HomeServer:
             self.led_obj.__init__(self.ser, self.current_color, led_vals, 1, 30)
             self.led_obj.start()
             self.current_color = led_vals
-            return render_template('index.html',
-                    wheel_color_value=hx,
-                    color_database=self._get_fav_db())
+            return render_template('index.html', wheel_color_value=hx)
         else:
             return render_template('index.html')
 
