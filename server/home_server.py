@@ -5,33 +5,14 @@ from led_single import LEDSingle
 from led_fade import LEDLinearFade
 from serial_wrapper import SerialWrapper, SerialMockup
 from flask import Flask, render_template, request, jsonify
+from flask_restful import Resource, Api
 
 COLOR_DB = './data/color_database.json'
 
 def rgbw_to_hex(r, g, b, w):
     return '#{:>02}{:>02}{:>02}{:>02}'.format(*map(lambda v: v[2:], [hex(r), hex(g), hex(b), hex(w)]))
 
-class HomeServer:
-    def __init__(self, host=None, arduino=None):
-        self.ser = SerialWrapper(arduino) if arduino is not None else SerialMockup(db=False)
-        self.host = host
-        self.app = Flask(__name__)
-        self.current_color = [0, 0, 0, 0]
-        self.led_obj = LEDLinearFade(self.ser, self.current_color, self.current_color, 1, 10)
-        self._setup_routes()
-
-    def _setup_routes(self):
-        self.app.route('/', methods=['GET', 'POST'])(self.index)
-        self.app.route('/home_server.py', methods=['GET', 'POST'])(self.thing)
-
-    # TODO change to resource
-    def thing(self):
-        print('hai')
-        r = request.get_json()
-        print(r)
-        print(r['nah'])
-        return "abc"
-
+class ColorDB(Resource):
     def _get_fav_db(self):
         try:
             with open(COLOR_DB) as db:
@@ -39,6 +20,27 @@ class HomeServer:
         except:
             print('DB error')
             return ''
+
+    def get(self):
+        print('Get!')
+        return 'wow.'
+    def post(self):
+        print('Post!')
+        return 'mhmm'
+
+class HomeServer:
+    def __init__(self, host=None, arduino=None):
+        self.ser = SerialWrapper(arduino) if arduino is not None else SerialMockup(db=False)
+        self.host = host
+        self.app = Flask(__name__)
+        self.api = Api(self.app)
+        self.current_color = [0, 0, 0, 0]
+        self.led_obj = LEDLinearFade(self.ser, self.current_color, self.current_color, 1, 10)
+        self._setup()
+
+    def _setup(self):
+        self.app.route('/', methods=['GET', 'POST'])(self.index)
+        self.api.add_resource(ColorDB, '/color_database')
 
     def index(self):
         if len(request.form) > 0:

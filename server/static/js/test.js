@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // function loadDoc() {
 //   var xhttp = new XMLHttpRequest();
 //   xhttp.onreadystatechange = function() {
@@ -10,7 +9,7 @@
 //   xhttp.send();
 // }
 $.ajax({
-  url: "home_server.py",
+  url: "color_database",
   type: "post",
   contentType: "application/json",
   dataType: "text",
