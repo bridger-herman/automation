@@ -45,25 +45,31 @@
             <button class="material-icons" type="button" id="load-favorite">file_upload</button>
             <div class="color-preview small preview-selected"></div>
           </div>
-          <button class="material-icons" type="button" id="edit-favorite">mode_edit</button>
-          <button class="material-icons" type="button" id="delete-favorite">delete</button>
+          <button class="material-icons" type="button" id="edit-favorite" disabled>mode_edit</button>
+          <button class="material-icons" type="button" id="delete-favorite" disabled>delete</button>
         </div>
         <ul class="favorites-list" data-color-database="{{color_database}}">
-          <li class="favorite-thumb static selected" data-color="#00ee00dd">
+          <li class="favorite-thumb static selected" data-color="#00b5da00">
             <div class="color-preview small static"></div>
             <div class="color-description">
-              Greenish
+              Nice Blue
             </div>
-          <li class="favorite-thumb static" data-color="#0000eedd">
+          <li class="favorite-thumb static" data-color="#ff0a0000">
             <div class="color-preview small static"></div>
             <div class="color-description">
-              Blueish
+              Orange
             </div>
           </li>
           <li class="favorite-thumb static" data-color="#ff001e00">
             <div class="color-preview small static"></div>
             <div class="color-description">
               Pink
+            </div>
+          </li>
+          <li class="favorite-thumb static" data-color="#9d00ff00">
+            <div class="color-preview small static"></div>
+            <div class="color-description">
+              Purple
             </div>
           </li>
           <li class="favorite-thumb add-current" data-color="{{wheel_color_value}}">

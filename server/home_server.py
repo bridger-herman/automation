@@ -25,6 +25,7 @@ class HomeServer:
             led_vals = [int(v) for k, v in request.form.items()]
             assert len(led_vals) == 4
             hx = rgbw_to_hex(*led_vals)
+            print(hx)
             self.led_obj.__init__(self.ser, self.current_color, led_vals, 1, 30)
             self.led_obj.start()
             self.current_color = led_vals
