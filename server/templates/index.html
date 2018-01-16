@@ -47,7 +47,7 @@
         <div class="favorites-header">
           <h2>Favorites</h2>
           <!-- <button type="button" class="load-selected" name="load">[load]</button> -->
-          <div class="load-selected">
+          <div class="load-selected color">
             <button class="material-icons" type="button" id="load-favorite">file_upload</button>
             <div class="color-preview small preview-selected"></div>
           </div>
@@ -57,30 +57,30 @@
         <ul class="favorites-list" data-color-database="{{color_database}}">
           <li class="favorite-thumb static selected" data-color="#00b5da00">
             <div class="color-preview small static"></div>
-            <div class="color-description">
+            <div class="description">
               Nice Blue
             </div>
           <li class="favorite-thumb static" data-color="#ff0a0000">
             <div class="color-preview small static"></div>
-            <div class="color-description">
+            <div class="description">
               Orange
             </div>
           </li>
           <li class="favorite-thumb static" data-color="#ff001e00">
             <div class="color-preview small static"></div>
-            <div class="color-description">
+            <div class="description">
               Pink
             </div>
           </li>
           <li class="favorite-thumb static" data-color="#9d00ff00">
             <div class="color-preview small static"></div>
-            <div class="color-description">
+            <div class="description">
               Purple
             </div>
           </li>
           <li class="favorite-thumb add-current" data-color="{{wheel_color_value}}">
             <div class="color-preview small"></div>
-            <div class="color-description">
+            <div class="description">
               +
             </div>
           </li>
@@ -89,7 +89,48 @@
     </form>
 
     <form class="page" method="post" id="gradient-led">
-      <p>hiya</p>
+      <div class="favorites">
+        <div class="favorites-header">
+          <h2>Gradients</h2>
+          <div class="load-selected gradient">
+            <button class="material-icons" type="button" id="load-favorite">file_upload</button>
+            <div class="gradient-preview small preview-selected"></div>
+          </div>
+          <button class="material-icons" type="button" id="edit-favorite" disabled>mode_edit</button>
+          <button class="material-icons" type="button" id="delete-favorite" disabled>delete</button>
+        </div>
+        <ul class="favorites-list">
+          <li class="favorite-thumb static selected" data-src="purples-blues-rgb.png">
+            <div class="gradient-preview small static"></div>
+            <div class="description">
+              Purples/Blues
+            </div>
+          <!-- <li class="favorite-thumb static" data-color="#ff0a0000">
+            <div class="color-preview small static"></div>
+            <div class="description">
+              Orange
+            </div>
+          </li>
+          <li class="favorite-thumb static" data-color="#ff001e00">
+            <div class="color-preview small static"></div>
+            <div class="description">
+              Pink
+            </div>
+          </li>
+          <li class="favorite-thumb static" data-color="#9d00ff00">
+            <div class="color-preview small static"></div>
+            <div class="description">
+              Purple
+            </div>
+          </li>
+          <li class="favorite-thumb add-current" data-color="{{wheel_color_value}}">
+            <div class="color-preview small"></div>
+            <div class="description">
+              +
+            </div>
+          </li> -->
+        </ul>
+      </div>
     </form>
 
     <script
@@ -104,6 +145,7 @@
     <script type="text/javascript" src="../static/js/color.js"></script>
     <script type="text/javascript" src="../static/js/inputLED.js"></script>
     <script type="text/javascript" src="../static/js/favorites.js"></script>
+    <script type="text/javascript" src="../static/js/gradients.js"></script>
     <script type="text/javascript" src="../static/js/index.js"></script>
     <!-- <script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script> -->
   </body>

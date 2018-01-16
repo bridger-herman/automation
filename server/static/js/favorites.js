@@ -50,8 +50,8 @@ function updateLoadSelected(selectedThumb) {
     return;
   }
   let rgbw = colorHexToArray(hex);
-  $(selectedThumb).parents().find('.load-selected').not('.static').find('.rgb-preview').css('background-color', rgbToHex(...(rgbw.slice(0, -1))));
-  $(selectedThumb).parents().find('.load-selected').not('.static').find('.w-preview').css('background-color', valueToAllHex(rgbw[3]));
+  $(selectedThumb).parents().find('.load-selected.color').not('.static').find('.rgb-preview').css('background-color', rgbToHex(...(rgbw.slice(0, -1))));
+  $(selectedThumb).parents().find('.load-selected.color').not('.static').find('.w-preview').css('background-color', valueToAllHex(rgbw[3]));
 }
 
 // Make an HTML thumbnail for a particular color

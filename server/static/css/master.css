@@ -31,9 +31,6 @@
   border: black 1px solid;
   margin: 5px;
 }
-.color-preview.small {
-  height: 2vh;
-}
 .color-preview * {
   display: inline-block;
   height: 100%
@@ -43,6 +40,24 @@
 }
 .w-preview {
   width: 20%;
+}
+
+/* TODO combine color-preview and gradient-preview */
+.gradient-preview {
+  display: inline-block;
+  height: 5vh;
+  width: 70%;
+  border: black 1px solid;
+  margin: 5px;
+}
+.gradient-preview * {
+  display: inline-block;
+  height: 100%
+}
+
+
+.small {
+  height: 2vh;
 }
 
 nav {

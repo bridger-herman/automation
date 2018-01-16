@@ -1,5 +1,7 @@
 function init() {
   setUpNav();
+
+  setupGradientPreviews();
   // Set up the color preview boxes
   setupColorPreviews();
 
