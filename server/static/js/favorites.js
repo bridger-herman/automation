@@ -32,7 +32,7 @@ function setupLoadSelected() {
     if (!rgbw) {
       return;
     }
-    let container = $(event.target).parents('.led-input-container');
+    let container = $(event.target).parents('.page');
     setSliderRGBW(container, rgbw);
     let color = $(container).find('.wheel-color-picker').wheelColorPicker('color');
     let names = ['red', 'green', 'blue', 'white'];

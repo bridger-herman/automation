@@ -12,7 +12,13 @@
     <title>Home Server</title>
   </head>
   <body>
-    <form method="post" class="led-input-container" id="single-led">
+    <nav>
+      <ul>
+        <li><a href="#single-led">Single</a></li>
+        <li><a href="#gradient-led">Gradient</a></li>
+      </ul>
+    </nav>
+    <form method="post" class="page" id="single-led">
       <input class="wheel-color-picker" type="text"
           value="{{wheel_color_value}}" data-wheelcolorpicker
           data-wcp-layout="block" data-wcp-sliders="wv"
@@ -80,6 +86,10 @@
           </li>
         </ul>
       </div>
+    </form>
+
+    <form class="page" method="post" id="gradient-led">
+      <p>hiya</p>
     </form>
 
     <script
