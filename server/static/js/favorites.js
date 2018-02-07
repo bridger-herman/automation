@@ -34,13 +34,14 @@ function setupLoadSelected() {
     }
     let container = $(event.target).parents('.led-input-container');
     setSliderRGBW(container, rgbw);
+    setWheelRGBW('.led-input-container');
     let color = $(container).find('.wheel-color-picker').wheelColorPicker('color');
     let names = ['red', 'green', 'blue', 'white'];
     for (var i = 0; i < rgbw.length; i++) {
       $('#' + names[i]).val(rgbw[i]);
     }
     updateColorPreview(container, rgbw);
-    container.submit();
+    // container.submit();
   });
 }
 
