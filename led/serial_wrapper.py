@@ -11,31 +11,40 @@ class SerialMockup:
     def write(self, byte):
         self.buf.write(bytes(byte))
         if self.db:
-            print('write', bytes(byte))
+            print('writing', bytes(byte))
 
     def readline(self):
         val = self.buf.getvalue()
         if self.db:
             print(val.__repr__())
-            print('read', val)
+            print('reading', val)
         self.buf = io.BytesIO()
 
     def close(self):
         pass
 
 class SerialWrapper:
-    def __init__(self, serial_file, baud_rate=9600):
+    def __init__(self, serial_file, db=False, baud_rate=9600):
+        self.db = db
         try:
             self.ser = serial.Serial(serial_file, 9600)
+            if self.db:
+                print('serial opened')
         except serial.serialutil.SerialException as e:
             print(e)
             self.ser = SerialMockup()
 
     def write(self, byte):
+        if self.db:
+            print('writing', bytes(byte))
         return self.ser.write(byte)
 
     def readline(self):
-        return self.ser.readline()
+        byte = self.ser.readline()
+        if self.db:
+            print('reading', byte)
+        return byte
 
     def close(self):
+        print('closing')
         return self.ser.close()
