@@ -8,7 +8,7 @@ from flask import Flask, render_template, request, jsonify
 DEBUG = False
 
 def rgbw_to_hex(r, g, b, w):
-    return '#{:>02}{:>02}{:>02}{:>02}'.format(*map(lambda v: v[2:], [hex(r), hex(g), hex(b), hex(w)]))
+    return ('#' + '{:>02}'*4).format(*map(lambda v: v[2:], [hex(r), hex(g), hex(b), hex(w)]))
 
 class HomeServer:
     def __init__(self, host=None, arduino=None):
@@ -18,7 +18,7 @@ class HomeServer:
         self.app = Flask(__name__)
         self.current_color = [0, 0, 0, 0]
         self.led_obj = LEDLinearFade(self.ser, self.current_color, \
-                self.current_color, 1, 10)
+                self.current_color, 1, 30)
         self._setup_routes()
 
     def _setup_routes(self):
@@ -30,10 +30,11 @@ class HomeServer:
             rgbw = request.json['rgbw']
             assert len(rgbw) == 4
             hx = rgbw_to_hex(*rgbw)
-            print(hx)
-            self.led_obj.__init__(self.ser, self.current_color, rgbw, 1, 30)
-            self.led_obj.start()
-            self.current_color = rgbw
+            if not self.led_obj.active:
+                print(hx)
+                self.led_obj.update_props(self.current_color, rgbw, 1, 30)
+                self.led_obj.start()
+                self.current_color = rgbw
             return jsonify({'status':200})
         except KeyError:
             return jsonify({'status':400})

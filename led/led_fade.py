@@ -15,22 +15,24 @@ class LEDLinearFade(LEDChanger):
             white: Constant color to use for white (if none, assuming color1
                     and color2 have white)
         '''
+        self.num_colors = len(color1)
+        self.update_props(color1, color2, duration, resolution)
         super().__init__(serial_wrapper, white)
+
+    def update_props(self, color1, color2, duration, resolution):
         self.start_color = color1
         self.end_color = color2
         self.duration = duration
         self.resolution = resolution
-        self.num_colors = len(color1)
-        self.colors, self.delays = self._get_iterators()
+        self.setup()
 
-    def _get_iterators(self):
+    def setup(self):
         color_diff = [self.end_color[i] - self.start_color[i] \
                 for i in range(self.num_colors)]
         color_step = [d/(self.resolution - 1) for d in color_diff]
-        delays = iter([self.duration/self.resolution]*self.resolution)
-        colors = iter([[int(self.start_color[i] + n*color_step[i] + 0.5) \
+        self.delays = iter([self.duration/self.resolution]*self.resolution)
+        self.colors = iter([[int(self.start_color[i] + n*color_step[i] + 0.5) \
                 for i in range(self.num_colors)] for n in range(self.resolution)])
-        return colors, delays
 
 if __name__ == '__main__':
     from serial_wrapper import SerialMockup, SerialWrapper

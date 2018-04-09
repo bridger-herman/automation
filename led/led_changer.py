@@ -9,16 +9,17 @@ MAX_COLORS = 4
 
 class LEDChanger:
     def __init__(self, serial_wrapper, white=None):
-        # Generators for indefinite color
-        self.colors = iter([])
-        self.delays = iter([])
-        self.dones = []
         self.queue = []
+        self.dones = []
         self.white = white
         self.ser = serial_wrapper
         signal.signal(signal.SIGALRM, self._handler)
         self.active = False
-        self.num_colors = MAX_COLORS
+
+    def setup(self):
+        # Generators for indefinite color
+        self.colors = iter([])
+        self.delays = iter([])
 
     def _handler(self, signum, frame):
         dbprint('handled!')
@@ -67,5 +68,6 @@ class LEDChanger:
             self.colors, self.delays = iter(colors), iter(delays)
 
     def __del__(self):
+        dbprint('deleting')
         self.stop()
         self.ser.close()
