@@ -9,8 +9,7 @@
 
 const int PINS[] = {RED, GREEN, BLUE, WHITE};
 unsigned char buf[BUFSIZE];
-int bytesRead;
-bool writeReady;
+int bytesRead = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -18,7 +17,7 @@ void setup() {
   for (int i = 0; i < NUMPINS; i++) {
     pinMode(PINS[i], OUTPUT);
   }
-  writeReady = true;
+  Serial.println("Initialized");
 }
 
 void setRGBW(int value) {
@@ -35,18 +34,12 @@ void setRGBW(int r, int g, int b, int w) {
 }
 
 void loop() {
-  if (writeReady) {
-    Serial.println("Ready");
-    writeReady = false;
-  }
   if (Serial.available() >= BUFSIZE*sizeof(unsigned char)) {
-    bytesRead = Serial.readBytes(buf, BUFSIZE);  
+    bytesRead = Serial.readBytes(buf, BUFSIZE);
     if (bytesRead > 0) {
       setRGBW(buf[0], buf[1], buf[2], buf[3]);
       bytesRead = 0;
-      Serial.println("Changed");
-      writeReady = true;
+      Serial.println("Changed ");
     }
   }
-  
 }
