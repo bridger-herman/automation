@@ -8,9 +8,6 @@ class SerialMockup:
             print('Using SerialMockup')
         self.buf = io.BytesIO()
 
-    def inWaiting(self):
-        return 1
-
     def write(self, byte):
         self.buf.write(bytes(byte))
         if self.db:
@@ -29,18 +26,28 @@ class SerialMockup:
 class SerialWrapper:
     def __init__(self, serial_file, db=False, baud_rate=9600):
         self.db = db
+        self.mockup = False
         try:
+            if serial_file is None:
+                raise serial.serialutil.SerialException('Board not supplied')
             self.ser = serial.Serial(serial_file, 9600)
             if self.db:
                 print('serial opened')
         except serial.serialutil.SerialException as e:
             print(e)
+            self.mockup = True
             self.ser = SerialMockup()
 
     def write(self, byte):
         if self.db:
             print('writing', bytes(byte))
         return self.ser.write(byte)
+
+    def inWaiting(self):
+        if self.mockup:
+            return 1
+        else:
+            return self.ser.inWaiting()
 
     def readline(self):
         byte = self.ser.readline()

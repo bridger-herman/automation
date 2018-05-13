@@ -27,7 +27,7 @@ class LEDChanger:
     def _handler(self, signum, frame):
         dbprint('handled!')
         try:
-            if self.ser.ser.inWaiting() > 0:
+            if self.ser.inWaiting() > 0:
                 incoming = self.ser.readline()
                 dbprint('readline', incoming)
             next_color = next(self.colors)
