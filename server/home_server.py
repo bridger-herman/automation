@@ -2,6 +2,7 @@ import sys
 sys.path.append('../led')
 from led_single import LEDSingle
 from led_fade import LEDLinearFade
+from led_gradient import LEDGradient
 from serial_wrapper import SerialWrapper, SerialMockup
 from flask import Flask, render_template, request, jsonify
 
@@ -17,13 +18,15 @@ class HomeServer:
         self.host = host
         self.app = Flask(__name__)
         self.current_color = [0, 0, 0, 0]
-        self.led_obj = LEDLinearFade(self.ser, self.current_color, \
-                self.current_color, 1, 30)
+        # self.led_obj = LEDLinearFade(self.ser, self.current_color, \
+        #         self.current_color, 1, 30)
+        self.led_obj = LEDGradient(self.ser, "./static/gradients/test.png")
         self._setup_routes()
 
     def _setup_routes(self):
         self.app.route('/', methods=['GET', 'POST'])(self.index)
         self.app.route('/update-leds', methods=['POST'])(self.update_leds)
+        self.app.route('/gradient-info', methods=['GET'])(self.gradient_info)
 
     def update_leds(self):
         try:
@@ -41,6 +44,14 @@ class HomeServer:
         except AssertionError:
             return jsonify({'status':400})
 
+    def gradient_info(self):
+        to_send = {
+            'duration':self.led_obj.duration,
+            'loop':self.led_obj.loop,
+            'src':self.led_obj.gradient_file,
+            'status':200
+        }
+        return jsonify(to_send)
 
     def index(self):
         return render_template('index.html', \

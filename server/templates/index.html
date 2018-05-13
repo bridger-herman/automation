@@ -12,75 +12,14 @@
     <title>Home Server</title>
   </head>
   <body>
-    <form method="post" class="led-input-container" id="single-led">
-      <input class="wheel-color-picker" type="text"
-          value="{{wheel_color_value}}" data-wheelcolorpicker
-          data-wcp-layout="block" data-wcp-sliders="wv"
-          data-wcp-cssClass="wheel-color-picker" data-wcp-autoResize="false"/>
-
-      <div class="led-input-row"
-          data-hex="#ff0000"
-          data-name="red">
-      </div>
-      <div class="led-input-row"
-          data-hex="#00ff00"
-          data-name="green">
-      </div>
-      <div class="led-input-row"
-          data-hex="#0000ff"
-          data-name="blue">
-      </div>
-      <div class="led-input-row"
-          data-hex="#ffffff"
-          data-name="white">
-      </div>
-
-      <div class="color-preview"></div>
-
-      <div class="favorites">
-        <div class="favorites-header">
-          <h2>Favorites</h2>
-          <!-- <button type="button" class="load-selected" name="load">[load]</button> -->
-          <div class="load-selected">
-            <button class="material-icons" type="button" id="load-favorite">file_upload</button>
-            <div class="color-preview small preview-selected"></div>
-          </div>
-          <button class="material-icons" type="button" id="edit-favorite" disabled>mode_edit</button>
-          <button class="material-icons" type="button" id="delete-favorite" disabled>delete</button>
-        </div>
-        <ul class="favorites-list" data-color-database="{{color_database}}">
-          <li class="favorite-thumb static selected" data-color="#00b5da00">
-            <div class="color-preview small static"></div>
-            <div class="color-description">
-              Nice Blue
-            </div>
-          <li class="favorite-thumb static" data-color="#ff0a0000">
-            <div class="color-preview small static"></div>
-            <div class="color-description">
-              Orange
-            </div>
-          </li>
-          <li class="favorite-thumb static" data-color="#ff001e00">
-            <div class="color-preview small static"></div>
-            <div class="color-description">
-              Pink
-            </div>
-          </li>
-          <li class="favorite-thumb static" data-color="#9d00ff00">
-            <div class="color-preview small static"></div>
-            <div class="color-description">
-              Purple
-            </div>
-          </li>
-          <li class="favorite-thumb add-current" data-color="{{wheel_color_value}}">
-            <div class="color-preview small"></div>
-            <div class="color-description">
-              +
-            </div>
-          </li>
-        </ul>
-      </div>
-    </form>
+    <div id="gradient-controls">
+      <img id="gradient-preview" src="" alt="current gradient image">
+      <button class="material-icons" type="button" id="gradient-play">play_arrow</button>
+      <button class="material-icons" type="button" id="gradient-pause">pause</button>
+      <button class="material-icons" type="button" id="gradient-stop">stop</button>
+      <input type="number" id="gradient-duration" value="">
+      <input type="checkbox" id="gradient-loop" value="">
+    </div>
 
     <script
       src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
