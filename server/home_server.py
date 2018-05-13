@@ -13,8 +13,7 @@ def rgbw_to_hex(r, g, b, w):
 
 class HomeServer:
     def __init__(self, host=None, arduino=None):
-        self.ser = SerialWrapper(arduino, db=DEBUG) if arduino is not \
-                None else SerialMockup(db=DEBUG)
+        self.ser = SerialWrapper(arduino, db=DEBUG)
         self.host = host
         self.app = Flask(__name__)
         self.current_color = [0, 0, 0, 0]
@@ -28,6 +27,16 @@ class HomeServer:
         self.app.route('/update-leds', methods=['POST'])(self.update_leds)
         self.app.route('/get-gradient', methods=['GET'])(self.get_gradient)
         self.app.route('/set-gradient', methods=['POST'])(self.set_gradient)
+        self.app.route('/playing', methods=['GET'])(self.playing)
+        self.app.route('/toggle-play', methods=['POST'])(self.toggle_play)
+
+    def playing(self):
+        return jsonify({'status':200, 'playing':self.led_obj.active})
+
+    def toggle_play(self):
+        if not self.led_obj.active:
+            self.led_obj.start()
+        return jsonify({'status':200})
 
     def set_gradient(self):
         try:
