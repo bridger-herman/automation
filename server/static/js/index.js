@@ -17,7 +17,7 @@ function sendGradientUpdates() {
 }
 
 function init() {
-  ajGET('get-gradient', updateGradientControls);
+  ajGET('get-gradient', null, updateGradientControls);
   $('#gradient-loop').on('change', sendGradientUpdates);
   $('#gradient-duration').on('change', sendGradientUpdates);
   $('#gradient-play-pause').on('click', toggleGradientPlay);
