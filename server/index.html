@@ -7,15 +7,18 @@
     <link rel="stylesheet" href="./static/css/favorites.css"> -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet">
-    <title>Home Server</title>
+    <link rel="stylesheet" href="./static/css/index.css">
+    <title>LEDs</title>
   </head>
   <body>
-    <div id="gradient-controls">
+    <div class="container" id="gradient-controls">
       <img id="gradient-preview" src="" alt="current gradient image">
-      <button class="material-icons" type="button" id="gradient-play-pause">play_arrow</button>
-      <button class="material-icons" type="button" id="gradient-stop">stop</button>
-      <input type="number" id="gradient-duration" value="">
-      <input type="checkbox" id="gradient-loop" value="">
+      <div class="centered" id="gradient-input-controls">
+        <button class="material-icons touchable" type="button" id="gradient-play-pause">play_arrow</button>
+        <button class="material-icons touchable" type="button" id="gradient-stop">stop</button>
+        <input class="touchable" type="number" id="gradient-duration" value="">
+        <input class="touchable" type="checkbox" id="gradient-loop" value="">
+      </div>
     </div>
 
     <script

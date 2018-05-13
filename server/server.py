@@ -13,7 +13,7 @@ class LEDServer(HTTPServer):
     def __init__(self, address, port, arduino=None):
         print('initializing server', address, port)
         self.ser = SerialWrapper(arduino)
-        self.led_obj = LEDGradient(self.ser, "./static/gradients/test.png", 5, False)
+        self.led_obj = LEDGradient(self.ser, "./gradients/test.png", 5, False)
         super().__init__((address, port), partial(Handler, self._get_routes()))
 
     def _get_routes(self):
@@ -71,5 +71,6 @@ class LEDServer(HTTPServer):
             return (False, 'text/plain', 'Failure')
 
 if __name__ == '__main__':
-    httpd = LEDServer('localhost', 8000, '/dev/ttyACM0')
+    # httpd = LEDServer('localhost', 8000, '/dev/ttyACM0')
+    httpd = LEDServer('0.0.0.0', 8000, '/dev/ttyACM0')
     httpd.serve_forever()

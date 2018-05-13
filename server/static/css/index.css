@@ -1,0 +1,30 @@
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center
+}
+
+.container #gradient-preview {
+  margin: 10px;
+  width: 90vw;
+}
+
+.centered {
+  display: flex;
+  justify-content: space-around;
+  width: 90vw;
+}
+
+.touchable {
+  width: 20%;
+  height: 10vh;
+  font-size: 5vh;
+}
