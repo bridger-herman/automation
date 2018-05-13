@@ -1,5 +1,6 @@
 import sys
 import json
+import time
 from http.server import HTTPServer
 from functools import partial
 
@@ -49,7 +50,10 @@ class LEDServer(HTTPServer):
 
     def toggle_play(self, data=''):
         if not self.led_obj.active:
+            t0 = time.time()
             self.led_obj.start()
+            t1 = time.time()
+            print('time', t1 - t0)
         else:
             self.led_obj.stop()
         return (True, '', '')

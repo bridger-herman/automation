@@ -7,6 +7,8 @@ from serial_wrapper import SerialWrapper
 dbprint = print if 'debug' in sys.argv else lambda *args, **kwargs: None
 MAX_COLORS = 4
 
+import time
+
 class LEDChanger:
     def __init__(self, serial_wrapper, white=None):
         self.queue = []
@@ -23,9 +25,13 @@ class LEDChanger:
 
     def _handler(self, signum, frame):
         dbprint('handled!')
+        io_delay = 0
         try:
             if self.ser.inWaiting() > 0:
+                t0 = time.time()
                 incoming = self.ser.readline()
+                t1 = time.time()
+                io_delay = t1 - t0
                 dbprint('readline', incoming)
             next_color = next(self.colors)
             next_delay = next(self.delays)
@@ -34,19 +40,23 @@ class LEDChanger:
         except StopIteration:
             self.stop()
         else:
-            self._send()
+            self._send(io_delay)
 
-    def _send(self):
+    def _send(self, io_time=0):
         color, delay = self.queue.pop()
         if self.white != None:
             color += [self.white]
         color = list(color)
         dbprint('sending', color, delay)
         bytes_send = (ctypes.c_ubyte * len(color))(*color)
+        t0 = time.time()
         self.ser.write(bytes_send)
+        t1 = time.time()
+        io_time += t1 - t0
         dbprint('sent', color, delay)
         self.dones.append((color, delay))
-        signal.setitimer(signal.ITIMER_REAL, delay)
+        io_time = io_time if (delay - io_time) >= 0 else -delay
+        signal.setitimer(signal.ITIMER_REAL, delay - io_time)
 
     def start(self):
         self.active = True

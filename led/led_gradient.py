@@ -3,8 +3,7 @@ from cv2 import imread
 
 class LEDGradient(LEDChanger):
 
-    def __init__(self, serial_wrapper, gradient_file,
-            duration=10, loop=True):
+    def __init__(self, serial_wrapper, gradient_file, duration=10, loop=True):
         '''
         Class LEDGradient
         Attributes:

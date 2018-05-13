@@ -17,7 +17,7 @@ void setup() {
   for (int i = 0; i < NUMPINS; i++) {
     pinMode(PINS[i], OUTPUT);
   }
-  Serial.println("Initialized");
+  Serial.println();
 }
 
 void setRGBW(int value) {
@@ -39,7 +39,7 @@ void loop() {
     if (bytesRead > 0) {
       setRGBW(buf[0], buf[1], buf[2], buf[3]);
       bytesRead = 0;
-      Serial.println("Changed ");
+      Serial.println();
     }
   }
 }
