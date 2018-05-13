@@ -5,7 +5,15 @@ function updateGradientControls(info) {
 }
 
 function toggleGradientPlay() {
+  // ajGET('playing', function(info) {
+  //   if (info.playing == false) { // Opposite, until threading
+    // }
+    // else {
+    // }
+  // });
+  $('#gradient-play-pause').html('pause');
   ajPOST('toggle-play', {}, function() {});
+  $('#gradient-play-pause').html('play_arrow');
 }
 
 function sendGradientUpdates() {
@@ -17,7 +25,7 @@ function sendGradientUpdates() {
 }
 
 function init() {
-  ajGET('get-gradient', null, updateGradientControls);
+  ajGET('get-gradient', updateGradientControls);
   $('#gradient-loop').on('change', sendGradientUpdates);
   $('#gradient-duration').on('change', sendGradientUpdates);
   $('#gradient-play-pause').on('click', toggleGradientPlay);
