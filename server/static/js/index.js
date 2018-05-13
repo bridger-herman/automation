@@ -1,7 +1,7 @@
 function updateGradientControls(info) {
   $('#gradient-preview').attr('src', info.src);
-  $('#gradient-loop').attr('value', info.loop);
-  $('#gradient-duration').attr('value', info.duration);
+  $('#gradient-loop').is(':checked',info.loop);
+  $('#gradient-duration').val(info.duration);
 }
 
 function toggleGradientPlay() {
@@ -18,8 +18,8 @@ function toggleGradientPlay() {
 
 function sendGradientUpdates() {
   let src = $('#gradient-preview').attr('src');
-  let loop = $('#gradient-loop').attr('value');
-  let duration = $('#gradient-duration').attr('value');
+  let loop = $('#gradient-loop').is(':checked');
+  let duration = $('#gradient-duration').val();
   let data = {'src':src, 'loop':loop, 'duration':duration};
   ajPOST('set-gradient', data, function() {});
 }

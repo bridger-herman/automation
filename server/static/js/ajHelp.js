@@ -5,7 +5,6 @@ function ajGET(url, onSuccess) {
     contentType: "application/json",
     dataType: "json",
     success: function(response) {
-      console.log(response);
       onSuccess(response);
     },
     error: function(xhr) {
@@ -25,7 +24,6 @@ function ajPOST(url, data, onSuccess) {
     dataType: "json",
     data: JSON.stringify(data, null, '\t'),
     success: function(response) {
-      console.log(response);
       onSuccess(response);
     },
     error: function(xhr) {
