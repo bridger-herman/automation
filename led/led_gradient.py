@@ -33,6 +33,9 @@ class LEDGradient(LEDChanger):
         else:
             self.colors = iter(colors_full_res)
             self.delays = iter(delays)
+        print('time-res:', time_res)
+        print('duration:', self.duration)
+        print('loop:', self.loop)
 
     def _inf_gen(self, lst):
         while True:
@@ -40,6 +43,7 @@ class LEDGradient(LEDChanger):
                 yield item
 
     def _load_from_file(self):
+        print('loading from file')
         pixels = imread(self.gradient_file)
         pixels = pixels[:, :, ::-1] # BGR to RGB
         rows, cols, depth = pixels.shape
@@ -55,6 +59,6 @@ class LEDGradient(LEDChanger):
 if __name__ == '__main__':
     from serial_wrapper import SerialMockup, SerialWrapper
     l = LEDGradient(SerialWrapper('/dev/ttyACM0'), \
-            './test.png',
+            '../server/static/gradients/test.png',
             5)
     l.start()
