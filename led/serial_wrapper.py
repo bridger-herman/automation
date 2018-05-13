@@ -8,6 +8,9 @@ class SerialMockup:
             print('Using SerialMockup')
         self.buf = io.BytesIO()
 
+    def inWaiting(self):
+        return 1
+
     def write(self, byte):
         self.buf.write(bytes(byte))
         if self.db:
