@@ -15,6 +15,7 @@ class LEDGradient(LEDChanger):
         '''
         super().__init__(serial_wrapper, None)
         self.num_colors = 4
+        self.gradient = None
         self.update_props(gradient_file, duration, loop)
 
     def update_props(self, gradient_file, duration, loop):
@@ -43,16 +44,18 @@ class LEDGradient(LEDChanger):
                 yield item
 
     def _load_from_file(self):
-        print('loading from file')
-        pixels = imread(self.gradient_file)
-        pixels = pixels[:, :, ::-1] # BGR to RGB
-        rows, cols, depth = pixels.shape
-        assert depth == 3
-        mid = rows//2
-        mid_rgb = mid//2
-        mid_white = mid_rgb + mid
-        return [list(pixels[mid_rgb, i, :]) + [pixels[mid_white, i, 2]] \
-                for i in range(cols)]
+        if self.gradient is None:
+            print('loading from file')
+            pixels = imread(self.gradient_file)
+            pixels = pixels[:, :, ::-1] # BGR to RGB
+            rows, cols, depth = pixels.shape
+            assert depth == 3
+            mid = rows//2
+            mid_rgb = mid//2
+            mid_white = mid_rgb + mid
+            self.gradient = [list(pixels[mid_rgb, i, :]) + [pixels[mid_white, i, 2]] \
+                    for i in range(cols)]
+        return self.gradient
 
 
 
