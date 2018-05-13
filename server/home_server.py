@@ -26,11 +26,32 @@ class HomeServer:
     def _setup_routes(self):
         self.app.route('/', methods=['GET', 'POST'])(self.index)
         self.app.route('/update-leds', methods=['POST'])(self.update_leds)
-        self.app.route('/gradient-info', methods=['GET'])(self.gradient_info)
+        self.app.route('/get-gradient', methods=['GET'])(self.get_gradient)
+        self.app.route('/set-gradient', methods=['POST'])(self.set_gradient)
+
+    def set_gradient(self):
+        try:
+            loop = bool(request.json['loop'])
+            duration = float(request.json['duration'])
+            src = request.json['src']
+            self.led_obj.update_props(src, duration, loop)
+            return jsonify({'status':200})
+        except:
+            print('error!')
+            return jsonify({'status':400})
+
+    def get_gradient(self):
+        to_send = {
+            'duration':self.led_obj.duration,
+            'loop':self.led_obj.loop,
+            'src':self.led_obj.gradient_file,
+            'status':200
+        }
+        return jsonify(to_send)
 
     def update_leds(self):
         try:
-            rgbw = request.json['rgbw']
+            loop = request.json['rgbw']
             assert len(rgbw) == 4
             hx = rgbw_to_hex(*rgbw)
             if not self.led_obj.active:
@@ -44,14 +65,6 @@ class HomeServer:
         except AssertionError:
             return jsonify({'status':400})
 
-    def gradient_info(self):
-        to_send = {
-            'duration':self.led_obj.duration,
-            'loop':self.led_obj.loop,
-            'src':self.led_obj.gradient_file,
-            'status':200
-        }
-        return jsonify(to_send)
 
     def index(self):
         return render_template('index.html', \
