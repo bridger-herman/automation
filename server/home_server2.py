@@ -55,6 +55,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._send_failure()
 
     def do_POST(self):
+        self.path = self.path[1:] # Discard leading slash
         content_length = int(self.headers['Content-Length'])
         if content_length != None:
             data = self.rfile.read(int(content_length))
@@ -71,16 +72,6 @@ class Handler(BaseHTTPRequestHandler):
             else:
                 self._send_hdr(200, content_type)
                 self.wfile.write(bytes(response, ENCODING))
-        # self.send_response(200)
-        # self.send_header('content-type', 'application/json')
-        # self.end_headers()
-        # print('body', body)
-        # response = BytesIO()
-        # response.write(b'This is POST request. ')
-        # response.write(b'Received: ')
-        # response.write(body)
-        # self.wfile.write(bytes(json.dumps({'hello':'world'}), 'utf-8'))
-        # self.wfile.write(response.getvalue())
 
 class LEDServer(HTTPServer):
     def __init__(self, address, port, arduino=None):
@@ -97,13 +88,6 @@ class LEDServer(HTTPServer):
             'playing'     :(('GET'), self.playing),
             'toggle-play' :(('POST'), self.toggle_play),
         }
-
-        # self.app.route('/', methods=['GET', 'POST'])(self.index)
-        # self.app.route('/update-leds', methods=['POST'])(self.update_leds)
-        # self.app.route('/get-gradient', methods=['GET'])(self.get_gradient)
-        # self.app.route('/set-gradient', methods=['POST'])(self.set_gradient)
-        # self.app.route('/playing', methods=['GET'])(self.playing)
-        # self.app.route('/toggle-play', methods=['POST'])(self.toggle_play)
 
     # Takes string as data
     # returns triple (success:bool, result_type:string, result)
@@ -148,5 +132,5 @@ class LEDServer(HTTPServer):
             return (False, 'text/plain', 'Failure')
 
 if __name__ == '__main__':
-    httpd = LEDServer('localhost', 8000)
+    httpd = LEDServer('localhost', 8000, '/dev/ttyACM0')
     httpd.serve_forever()

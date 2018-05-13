@@ -21,13 +21,12 @@ function ajGET(url, data, onSuccess) {
 function ajPOST(url, data, onSuccess) {
   // AHHHH stringify so many hours were wasted here. Kept getting 400 error
   // https://stackoverflow.com/a/17082422
-  let jString = JSON.stringify(data, null, '\t');
   $.ajax({
     url: url,
     type: "post",
     contentType: "application/json",
     dataType: "json",
-    data: jString,
+    data: JSON.stringify(data, null, '\t'),
     // headers: {'Content-Length':jString.length},
     success: function(response) {
       console.log(response);
