@@ -11,11 +11,12 @@ import time
 
 class LEDChanger:
     def __init__(self, serial_wrapper, white=None):
-        self.queue = []
+        self.queue = [([0, 0, 0, 0], 0.1)] # Clear out stale bits (?)
         self.dones = []
         self.white = white
         self.ser = serial_wrapper
         signal.signal(signal.SIGALRM, self._handler)
+        signal.signal(signal.SIGINT, self._shutdown)
         self.active = False
 
     def setup(self):
@@ -57,6 +58,9 @@ class LEDChanger:
         self.dones.append((color, delay))
         io_time = io_time if (delay - io_time) >= 0 else -delay
         signal.setitimer(signal.ITIMER_REAL, delay - io_time)
+
+    def _shutdown(self, signum, frame):
+        self.stop()
 
     def start(self):
         self.active = True

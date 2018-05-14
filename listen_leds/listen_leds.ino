@@ -17,7 +17,8 @@ void setup() {
   for (int i = 0; i < NUMPINS; i++) {
     pinMode(PINS[i], OUTPUT);
   }
-  Serial.println();
+  memset(buf, BUFSIZE*sizeof(unsigned char), 0);
+  Serial.println("I");
 }
 
 void setRGBW(int value) {
@@ -36,10 +37,11 @@ void setRGBW(int r, int g, int b, int w) {
 void loop() {
   if (Serial.available() >= BUFSIZE*sizeof(unsigned char)) {
     bytesRead = Serial.readBytes(buf, BUFSIZE);
-    if (bytesRead > 0) {
+    if (bytesRead == BUFSIZE) {
       setRGBW(buf[0], buf[1], buf[2], buf[3]);
       bytesRead = 0;
-      Serial.println();
+      Serial.println("C");
+      memset(buf, BUFSIZE*sizeof(unsigned char), 0);
     }
   }
 }

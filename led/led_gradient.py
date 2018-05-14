@@ -61,6 +61,6 @@ class LEDGradient(LEDChanger):
 if __name__ == '__main__':
     from serial_wrapper import SerialMockup, SerialWrapper
     l = LEDGradient(SerialWrapper('/dev/ttyACM0'), \
-            '../server/static/gradients/test.png',
+            '../server/gradients/test.png',
             5)
     l.start()
