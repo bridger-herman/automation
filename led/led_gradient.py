@@ -1,6 +1,10 @@
 from led_changer import LEDChanger
 from cv2 import imread
 
+PERFORMANCE_CUTOFFS = [
+    (15,2)
+]
+
 class LEDGradient(LEDChanger):
 
     def __init__(self, serial_wrapper, gradient_file, duration=10, loop=True):
@@ -25,6 +29,9 @@ class LEDGradient(LEDChanger):
 
     def setup(self):
         colors_full_res = self._load_from_file()
+        for cutoff, divisor in PERFORMANCE_CUTOFFS:
+            if self.duration <= cutoff:
+                colors_full_res = colors_full_res[::divisor]
         time_res = self.duration/len(colors_full_res)
         delays = [time_res for _ in range(len(colors_full_res))]
         if self.loop:
@@ -62,5 +69,5 @@ if __name__ == '__main__':
     from serial_wrapper import SerialMockup, SerialWrapper
     l = LEDGradient(SerialWrapper('/dev/ttyACM0'), \
             '../server/gradients/test.png',
-            5)
+            5, False)
     l.start()

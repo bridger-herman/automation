@@ -11,8 +11,9 @@ import time
 
 class LEDChanger:
     def __init__(self, serial_wrapper, white=None):
-        self.queue = [([0, 0, 0, 0], 0.1)] # Clear out stale bits (?)
+        self.queue = []
         self.dones = []
+        self.start_time = time.time()
         self.white = white
         self.ser = serial_wrapper
         signal.signal(signal.SIGALRM, self._handler)
@@ -27,13 +28,11 @@ class LEDChanger:
     def _handler(self, signum, frame):
         dbprint('handled!')
         io_delay = 0
+        t0 = time.time()
+        incoming = self.ser.readline()
+        t1 = time.time()
+        io_delay = t1 - t0
         try:
-            if self.ser.inWaiting() > 0:
-                t0 = time.time()
-                incoming = self.ser.readline()
-                t1 = time.time()
-                io_delay = t1 - t0
-                dbprint('readline', incoming)
             next_color = next(self.colors)
             next_delay = next(self.delays)
             self.queue.insert(0, (next_color, next_delay))
@@ -47,9 +46,9 @@ class LEDChanger:
         color, delay = self.queue.pop()
         if self.white != None:
             color += [self.white]
-        color = list(color)
-        dbprint('sending', color, delay)
-        bytes_send = (ctypes.c_ubyte * len(color))(*color)
+        data = [0] + list(color) # [<reset>, <color>]
+        dbprint('sending', color)
+        bytes_send = (ctypes.c_ubyte * len(data))(*data)
         t0 = time.time()
         self.ser.write(bytes_send)
         t1 = time.time()
@@ -70,17 +69,17 @@ class LEDChanger:
             pass
 
     def stop(self):
+        if not self.active:
+            return
         dbprint('stopped')
         self.active = False
         while len(self.queue) > 0:
+            dbprint('finishing send')
             self._send()
-        self.reset()
+        bytes_send = (ctypes.c_ubyte * 5)(*[1, 0, 0, 0, 0])
+        self.ser.write(bytes_send)
+        print('total time', time.time() - self.start_time)
         signal.setitimer(signal.ITIMER_REAL, 0)
-
-    def reset(self):
-        if self.dones:
-            colors, delays = zip(*self.dones)
-            self.colors, self.delays = iter(colors), iter(delays)
 
     def __del__(self):
         dbprint('deleting')

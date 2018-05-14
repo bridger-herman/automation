@@ -15,10 +15,18 @@ class SerialMockup:
 
     def readline(self):
         val = self.buf.getvalue()
+        line = self.buf.readline()
         if self.db:
             print(val.__repr__())
             print('reading', val)
         self.buf = io.BytesIO()
+        return line
+
+    def read(self, num_bytes):
+        bytes = self.buf.read(num_bytes)
+        if self.db:
+            print('reading', bytes)
+        return bytes
 
     def close(self):
         pass
@@ -36,7 +44,8 @@ class SerialWrapper:
         except serial.serialutil.SerialException as e:
             print(e)
             self.mockup = True
-            self.ser = SerialMockup()
+            # self.ser = SerialMockup()
+            self.ser = BytesIO()
 
     def write(self, byte):
         if self.db:
@@ -50,11 +59,19 @@ class SerialWrapper:
             return self.ser.inWaiting()
 
     def readline(self):
-        byte = self.ser.readline()
+        bytes = self.ser.readline()
         if self.db:
-            print('reading', byte)
-        return byte
+            print('reading', bytes)
+        return bytes
+
+    def read(self, num_bytes):
+        bytes = self.ser.read(num_bytes)
+        return bytes
+
+    def flush(self):
+        return self.ser.flush()
 
     def close(self):
-        print('closing')
+        if self.db:
+            print('closing')
         return self.ser.close()

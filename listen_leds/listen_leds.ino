@@ -5,7 +5,7 @@
 #define MAX_VALUE 255
 
 #define NUMPINS 4
-#define BUFSIZE 4
+#define BUFSIZE 5
 
 const int PINS[] = {RED, GREEN, BLUE, WHITE};
 unsigned char buf[BUFSIZE];
@@ -34,14 +34,40 @@ void setRGBW(int r, int g, int b, int w) {
   analogWrite(WHITE, w);
 }
 
+void panic() {
+  for (int i = 0; i < 1000; i += 100) {
+    setRGBW(i%MAX_VALUE, 0, 0, 0);
+    delay(10);
+  }
+}
+
+void printBuffer(unsigned char* buf) {
+  String cur;
+  cur.concat(buf[1]);
+  cur.concat(' ');
+  cur.concat(buf[2]);
+  cur.concat(' ');
+  cur.concat(buf[3]);
+  cur.concat(' ');
+  cur.concat(buf[4]);
+  Serial.println(cur);
+}
+
 void loop() {
   if (Serial.available() >= BUFSIZE*sizeof(unsigned char)) {
     bytesRead = Serial.readBytes(buf, BUFSIZE);
     if (bytesRead == BUFSIZE) {
-      setRGBW(buf[0], buf[1], buf[2], buf[3]);
-      bytesRead = 0;
-      Serial.println("C");
-      memset(buf, BUFSIZE*sizeof(unsigned char), 0);
+      if (buf[0] > 0) {
+//        setRGBW(0, 0, 0, 0);
+        Serial.flush();
+      }
+      else {
+        setRGBW(buf[1], buf[2], buf[3], buf[4]);
+        bytesRead = 0;      
+//        printBuffer(buf);
+        Serial.println("C");
+        memset(buf, BUFSIZE*sizeof(unsigned char), 0);
+      }
     }
   }
 }
