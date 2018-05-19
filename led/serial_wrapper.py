@@ -1,5 +1,6 @@
 import serial
 import io
+import threading
 
 class SerialMockup:
     def __init__(self, db=True):
@@ -35,6 +36,7 @@ class SerialWrapper:
     def __init__(self, serial_file, db=False, baud_rate=9600):
         self.db = db
         self.mockup = False
+        # # self.lock = threading.Lock()
         try:
             if serial_file is None:
                 raise serial.serialutil.SerialException('Board not supplied')
@@ -45,12 +47,15 @@ class SerialWrapper:
             print(e)
             self.mockup = True
             # self.ser = SerialMockup()
-            self.ser = BytesIO()
+            self.ser = io.BytesIO()
 
     def write(self, byte):
         if self.db:
             print('writing', bytes(byte))
-        return self.ser.write(byte)
+        # self.lock.acquire()
+        b = self.ser.write(byte)
+        # self.lock.release()
+        return b
 
     def inWaiting(self):
         if self.mockup:
@@ -59,13 +64,17 @@ class SerialWrapper:
             return self.ser.inWaiting()
 
     def readline(self):
+        # self.lock.acquire()
         bytes = self.ser.readline()
+        # self.lock.release()
         if self.db:
             print('reading', bytes)
         return bytes
 
     def read(self, num_bytes):
+        # self.lock.acquire()
         bytes = self.ser.read(num_bytes)
+        # self.lock.release()
         return bytes
 
     def flush(self):

@@ -13,11 +13,12 @@ class LEDChanger:
     def __init__(self, serial_wrapper, white=None):
         self.queue = []
         self.dones = []
-        self.start_time = time.time()
         self.white = white
+        self.start_time = time.time()
         self.ser = serial_wrapper
         signal.signal(signal.SIGALRM, self._handler)
-        signal.signal(signal.SIGINT, self._shutdown)
+        #  signal.signal(signal.SIGINT, self._shutdown)
+        signal.signal(signal.SIGTERM, self._shutdown)
         self.active = False
 
     def setup(self):
@@ -59,14 +60,18 @@ class LEDChanger:
         signal.setitimer(signal.ITIMER_REAL, delay - io_time)
 
     def _shutdown(self, signum, frame):
+        print('caught SIGTERM')
         self.stop()
 
     def start(self):
+        print('started')
         self.active = True
+        self.start_time = time.time()
         self._handler(0, 0)
         # Spin until we're done here
         while self.active:
             pass
+        print('past loop')
 
     def stop(self):
         if not self.active:
@@ -79,9 +84,18 @@ class LEDChanger:
         bytes_send = (ctypes.c_ubyte * 5)(*[1, 0, 0, 0, 0])
         self.ser.write(bytes_send)
         print('total time', time.time() - self.start_time)
-        signal.setitimer(signal.ITIMER_REAL, 0)
+        self.reset()
+
+    def reset(self):
+        print('leds resetting')
+        colors, delays = zip(*self.dones)
+        self.colors = iter(colors)
+        self.delays = iter(delays)
+        self.dones = []
+
 
     def __del__(self):
         dbprint('deleting')
         self.stop()
         self.ser.close()
+        signal.setitimer(signal.ITIMER_REAL, 0)

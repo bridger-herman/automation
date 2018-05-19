@@ -1,12 +1,16 @@
 from led_changer import LEDChanger
 from cv2 import imread
+from serial_wrapper import SerialMockup, SerialWrapper
+import pickle
+import sys
+import os
 
 PERFORMANCE_CUTOFFS = [
-    (15,2)
+    (15,2),
+    (10,4),
 ]
 
 class LEDGradient(LEDChanger):
-
     def __init__(self, serial_wrapper, gradient_file, duration=10, loop=True):
         '''
         Class LEDGradient
@@ -62,12 +66,3 @@ class LEDGradient(LEDChanger):
             self.gradient = [list(pixels[mid_rgb, i, :]) + [pixels[mid_white, i, 2]] \
                     for i in range(cols)]
         return self.gradient
-
-
-
-if __name__ == '__main__':
-    from serial_wrapper import SerialMockup, SerialWrapper
-    l = LEDGradient(SerialWrapper('/dev/ttyACM0'), \
-            '../server/gradients/test.png',
-            5, False)
-    l.start()
