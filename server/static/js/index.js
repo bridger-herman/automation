@@ -5,9 +5,22 @@ function updateGradientControls(info) {
 }
 
 function toggleGradientPlay() {
-  $('#gradient-play-pause').html('pause');
   ajPOST('toggle-play', {}, function() {});
-  $('#gradient-play-pause').html('play_arrow');
+  updatePlayingIcons();
+  // Update icon when current gradient is done (quasi-HACK)
+  ajGET('get-gradient', function (info) {
+    setTimeout(
+      function () { updatePlayingIcons(); },
+      1000*parseInt(info.duration)
+    );
+  });
+}
+
+function updatePlayingIcons() {
+  ajGET('is-playing', function(info) {
+    if (info.playing) { $('#gradient-play-pause').html('pause'); }
+    else { $('#gradient-play-pause').html('play_arrow'); }
+  });
 }
 
 function sendGradientUpdates() {

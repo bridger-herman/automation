@@ -24,7 +24,7 @@ class LEDServer(HTTPServer):
             ''            :(('GET', 'POST'), self.index),
             'get-gradient':(('GET'), self.get_gradient),
             'set-gradient':(('POST'), self.set_gradient),
-            'playing'     :(('GET'), self.playing),
+            'is-playing'     :(('GET'), self.is_playing),
             'toggle-play' :(('POST'), self.toggle_play),
         }
 
@@ -36,16 +36,14 @@ class LEDServer(HTTPServer):
         return self.led_process.is_alive()
 
     def toggle_play(self, data=''):
-        resp = (True, '', '')
         if self.led_process.exitcode is not None:  # Reset, then start again
             self._set_led_process()
         if not self.led_process.started:  # We're ready to start
             self.led_process.start()
-            return resp
-        #  else:  # LEDs currently going
-        self.led_process.terminate()
-        self._set_led_process()
-        return resp
+        else:
+            self.led_process.terminate()
+            self._set_led_process()
+        return (True, '', '')
 
     # Takes string as data
     # returns triple (success:bool, result_type:string, result)
@@ -67,8 +65,7 @@ class LEDServer(HTTPServer):
         }
         return (True, '', json.dumps(to_send))
 
-    def playing(self, data=''):
-        print('playing:', self._active())
+    def is_playing(self, data=''):
         return (True, '', json.dumps({'playing':self._active()}))
 
     def set_gradient(self, data=''):

@@ -5,12 +5,10 @@ import pickle
 import sys
 import os
 
-# Performance optimization, hopefully not necissary because it looks
-# super crappy
-# PERFORMANCE_CUTOFFS = [
-#     (15,2),
-#     (10,4),
-# ]
+PERFORMANCE_CUTOFFS = [
+    (15,2),
+    (6,4),
+]
 
 class LEDGradient(LEDChanger):
     def __init__(self, serial_wrapper, gradient_file, duration=10, loop=True):
@@ -35,9 +33,9 @@ class LEDGradient(LEDChanger):
 
     def setup(self):
         colors_full_res = self._load_from_file()
-        # for cutoff, divisor in PERFORMANCE_CUTOFFS:
-        #     if self.duration <= cutoff:
-        #         colors_full_res = colors_full_res[::divisor]
+        for cutoff, divisor in PERFORMANCE_CUTOFFS:
+            if self.duration <= cutoff:
+                colors_full_res = colors_full_res[::divisor]
         time_res = self.duration/len(colors_full_res)
         delays = [time_res for _ in range(len(colors_full_res))]
         if self.loop:
