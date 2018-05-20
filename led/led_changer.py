@@ -30,7 +30,9 @@ class LEDChanger:
         dbprint('handled!')
         io_delay = 0
         t0 = time.time()
+        # print('befpre read')
         incoming = self.ser.readline()
+        # print('after read')
         t1 = time.time()
         io_delay = t1 - t0
         try:
@@ -44,6 +46,8 @@ class LEDChanger:
             self._send(io_delay)
 
     def _send(self, io_time=0):
+        if len(self.queue) == 0:
+            return
         color, delay = self.queue.pop()
         if self.white != None:
             color += [self.white]
@@ -88,10 +92,13 @@ class LEDChanger:
 
     def reset(self):
         print('leds resetting')
-        colors, delays = zip(*self.dones)
-        self.colors = iter(colors)
-        self.delays = iter(delays)
-        self.dones = []
+        try:
+            colors, delays = zip(*self.dones)
+            self.colors = iter(colors)
+            self.delays = iter(delays)
+            self.dones = []
+        except ValueError:
+            print('nothing to reset')
 
 
     def __del__(self):

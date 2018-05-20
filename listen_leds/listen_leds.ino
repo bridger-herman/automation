@@ -18,7 +18,7 @@ void setup() {
     pinMode(PINS[i], OUTPUT);
   }
   memset(buf, BUFSIZE*sizeof(unsigned char), 0);
-  Serial.println("I");
+  Serial.println("I"); // Successfully initialized
 }
 
 void setRGBW(int value) {
@@ -60,12 +60,13 @@ void loop() {
       if (buf[0] > 0) {
 //        setRGBW(0, 0, 0, 0);
         Serial.flush();
+        Serial.println("R"); // Ready for the next batch of LED commands
       }
       else {
         setRGBW(buf[1], buf[2], buf[3], buf[4]);
         bytesRead = 0;      
 //        printBuffer(buf);
-        Serial.println("C");
+        Serial.println("C"); // Successfully changed
         memset(buf, BUFSIZE*sizeof(unsigned char), 0);
       }
     }
