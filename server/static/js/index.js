@@ -5,12 +5,6 @@ function updateGradientControls(info) {
 }
 
 function toggleGradientPlay() {
-  // ajGET('playing', function(info) {
-  //   if (info.playing == false) { // Opposite, until threading
-    // }
-    // else {
-    // }
-  // });
   $('#gradient-play-pause').html('pause');
   ajPOST('toggle-play', {}, function() {});
   $('#gradient-play-pause').html('play_arrow');
