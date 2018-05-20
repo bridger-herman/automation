@@ -1,15 +1,12 @@
 from mss import mss
+from color_helpers import clamp
 from led_changer import LEDChanger
 import numpy as np
-# from cv2 import imread
 from serial_wrapper import SerialMockup, SerialWrapper
-# import pickle
-# import sys
-# import os
-import time
 
 class LEDBias(LEDChanger):
-    def __init__(self, serial_wrapper, size=100):
+    def __init__(self, serial_wrapper, brightness_multiplier=0.5,
+            saturation_adjust=2.0, size=200):
         super().__init__(serial_wrapper, 0)
         self.sct = mss()
         mon = self.sct.monitors[0]
@@ -23,26 +20,32 @@ class LEDBias(LEDChanger):
                 'width': size,
                 'height': size
         }
+        self.brightness_multiplier = brightness_multiplier
+        self.saturation_adjust = saturation_adjust
         self.colors = self._next_color()
         self.delays = self._next_delay()
 
     def _next_color(self):
         while True:
-            # For now assumes only one pixel
-            # t0 = time.time()
             g = self.sct.grab(self.window)
             pixels = np.array(g.pixels)
-            avg = np.average(pixels, axis=(0, 1))*0.5
-            avg = np.array(avg, dtype=np.uint8)
-            # t1 = time.time()
-            # yield list([0, 0, 0])
-            yield list(avg[:3])
+            avg_color = np.average(pixels, axis=(0, 1))
+            avg_color = (1/255)*np.power(avg_color, np.ones(len(avg_color))*2)
+            avg_color = avg_color*self.brightness_multiplier
+            avg_val = np.average(avg_color)
+
+             # Adjust "saturation"
+            adjusted = avg_val + (self.saturation_adjust*(avg_color - avg_val))
+
+            adjusted = clamp(adjusted)
+            avg = np.array(adjusted, dtype=np.uint8)
+            yield list(avg)
 
     def _next_delay(self):
         while True:
-            yield 1/30 # desired 60fps
+            yield 1/30 # desired 30fps
 
 
 if __name__ == '__main__':
-    l = LEDBias(SerialWrapper('/dev/ttyACM1'))
+    l = LEDBias(SerialWrapper('/dev/ttyACM0'))
     l.start()
