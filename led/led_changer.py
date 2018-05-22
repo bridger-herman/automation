@@ -106,4 +106,4 @@ class LEDChanger:
         dbprint('deleting')
         self.stop()
         self.ser.close()
-        signal.setitimer(signal.ITIMER_REAL, 0)
+        self.timer = None
