@@ -3,6 +3,7 @@ import traceback
 import signal
 import sys
 from serial_wrapper import SerialWrapper
+from threading import Timer
 
 dbprint = print if 'debug' in sys.argv else lambda *args, **kwargs: None
 MAX_COLORS = 4
@@ -16,8 +17,7 @@ class LEDChanger:
         self.white = white
         self.start_time = time.time()
         self.ser = serial_wrapper
-        signal.signal(signal.SIGALRM, self._handler)
-        #  signal.signal(signal.SIGINT, self._shutdown)
+        self.timer = None # Don't start timing until start() is called
         signal.signal(signal.SIGTERM, self._shutdown)
         self.active = False
 
@@ -26,7 +26,7 @@ class LEDChanger:
         self.colors = iter([])
         self.delays = iter([])
 
-    def _handler(self, signum, frame):
+    def _handler(self):
         dbprint('handled!')
         io_delay = 0
         t0 = time.time()
@@ -61,7 +61,8 @@ class LEDChanger:
         dbprint('sent', color, delay)
         self.dones.append((color, delay))
         io_time = io_time if (delay - io_time) >= 0 else -delay
-        signal.setitimer(signal.ITIMER_REAL, delay - io_time)
+        self.timer = Timer(delay - io_time, self._handler)
+        self.timer.start()
 
     def _shutdown(self, signum, frame):
         print('caught SIGTERM')
@@ -71,7 +72,7 @@ class LEDChanger:
         print('started')
         self.active = True
         self.start_time = time.time()
-        self._handler(0, 0)
+        self._handler()
         # Spin until we're done here
         while self.active:
             pass
