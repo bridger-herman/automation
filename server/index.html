@@ -5,6 +5,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet">
     <link rel="stylesheet" href="./static/css/index.css">
+    <link rel="stylesheet" href="./static/css/favorites.css">
     <title>LEDs</title>
   </head>
   <body>
@@ -15,6 +16,12 @@
         <input class="touchable" type="number" id="gradient-duration" value="">
         <input class="touchable" type="checkbox" id="gradient-loop" value="">
       </div>
+    </div>
+
+    <div class="centered container favorites" id="favorite-gradients">
+      <ul class="no-indent" id='favorite-list'>
+        <!-- auto-populated -->
+      </ul>
     </div>
 
     <script

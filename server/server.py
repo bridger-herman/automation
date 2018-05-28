@@ -1,9 +1,11 @@
+import os
 import sys
 import json
 import time
 from led_process import LEDProcess
 from http.server import HTTPServer
 from functools import partial
+from pathlib import Path
 
 sys.path.append('../led')
 from led_gradient import LEDGradient
@@ -25,6 +27,7 @@ class LEDServer(HTTPServer):
             'set-gradient':(('POST'), self.set_gradient),
             'is-playing'     :(('GET'), self.is_playing),
             'toggle-play' :(('POST'), self.toggle_play),
+            'gradient-list':(('GET'), self.gradient_list),
         }
 
     def _set_led_process(self):
@@ -32,6 +35,12 @@ class LEDServer(HTTPServer):
 
     def _active(self):
         return self.led_process.is_alive()
+
+    def gradient_list(self, data=''):
+        grad_dir = Path('./gradients')
+        gradients = list(map(lambda g: str(grad_dir.joinpath(g)), \
+                os.listdir(str(grad_dir))))
+        return (True, 'application/json', json.dumps({'gradients':gradients}))
 
     def toggle_play(self, data=''):
         if not self._active():  # Reset, then start again

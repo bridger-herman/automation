@@ -23,6 +23,12 @@ function updatePlayingIcons() {
   });
 }
 
+function makeGradientPreview(gradientPath) {
+    return '<li class="favorite-thumb">' +
+        '<img src="' + gradientPath + '"</img>' +
+        '</li>';
+}
+
 function sendGradientUpdates() {
   let src = $('#gradient-preview').attr('src');
   let loop = $('#gradient-loop').is(':checked');
@@ -36,6 +42,13 @@ function init() {
   $('#gradient-loop').on('change', sendGradientUpdates);
   $('#gradient-duration').on('change', sendGradientUpdates);
   $('#gradient-play-pause').on('click', toggleGradientPlay);
+
+  ajGET('gradient-list', function(info) {
+    let list = $('#favorite-list');
+    for (var x in info.gradients) {
+      list.append(makeGradientPreview(info.gradients[x]));
+    }
+  });
 }
 
 document.onload = init();
