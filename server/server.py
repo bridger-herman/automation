@@ -2,7 +2,6 @@ import sys
 import json
 import time
 from led_process import LEDProcess
-from multiprocessing import Process
 from http.server import HTTPServer
 from functools import partial
 
@@ -32,11 +31,10 @@ class LEDServer(HTTPServer):
         self.led_process = LEDProcess(self.led_obj)
 
     def _active(self):
-        # return self.led_process.started and self.led_process.exitcode not None
         return self.led_process.is_alive()
 
     def toggle_play(self, data=''):
-        if self.led_process.exitcode is not None:  # Reset, then start again
+        if not self._active():  # Reset, then start again
             self._set_led_process()
         if not self.led_process.started:  # We're ready to start
             self.led_process.start()
