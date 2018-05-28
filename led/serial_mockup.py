@@ -1,6 +1,5 @@
 import serial
 import io
-import turtle
 
 class SerialMockup:
     def __init__(self, db=False):
@@ -8,27 +7,16 @@ class SerialMockup:
         if self.db:
             print('Using SerialMockup')
         self.buf = io.BytesIO()
-        self.white_turtle = turtle.Turtle()
-        self.rgb_turtle = turtle.Turtle()
-        self.scr = self.rgb_turtle.getscreen()
-        self._setup()
-
-    def _setup(self):
-        self.white_turtle.shape('square')
-        self.rgb_turtle.shape('square')
-        self.white_turtle.shapesize(1, 50)
-        self.rgb_turtle.shapesize(1, 50)
-        self.scr.colormode(255)
-        self.white_turtle.goto(0, 50)
-        self.rgb_turtle.goto(0, -50)
+        self.format_str = '\x1b[38;2;{};{};{}m{}\x1b[0m'
 
     def write(self, byte):
         color = list(byte)
         rgb = color[1:4]
         white = [color[4]]*3
         self.buf.write(bytes(byte))
-        self.rgb_turtle.color(rgb)
-        self.white_turtle.color(white)
+        print(self.format_str.format(*rgb, '#'*80))
+        print(self.format_str.format(*white, '#'*80))
+        print()
         if self.db:
             print('writing', bytes(byte))
 
