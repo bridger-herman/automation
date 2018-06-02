@@ -1,5 +1,6 @@
 from led_changer import LEDChanger
-from cv2 import imread
+from PIL import Image
+import numpy as np
 from serial_wrapper import SerialMockup, SerialWrapper
 import pickle
 import sys
@@ -59,8 +60,8 @@ class LEDGradient(LEDChanger):
     def _load_from_file(self):
         if self.gradient is None:
             print('loading from file')
-            pixels = imread(self.gradient_file)
-            pixels = pixels[:, :, ::-1] # BGR to RGB
+            img = Image.open(self.gradient_file)
+            pixels = np.array(img, dtype=np.uint8)
             rows, cols, depth = pixels.shape
             assert depth == 3
             mid = rows//2
