@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import time
+import traceback
 from led_process import LEDProcess
 from http.server import HTTPServer
 from functools import partial
@@ -87,7 +88,7 @@ class LEDServer(HTTPServer):
 
     def set_gradient(self, data=''):
         try:
-            request = json.loads(data)
+            request = json.loads(data.decode('utf-8'))
             loop = bool(request['loop'])
             duration = float(request['duration'])
             self.which_gradient = int(request['which'])
@@ -95,7 +96,7 @@ class LEDServer(HTTPServer):
             self.led_obj.update_props(src, duration, loop)
             return (True, '', '')
         except:
-            print('error!')
+            traceback.print_exc()
             return (False, 'text/plain', 'Failure')
 
 if __name__ == '__main__':
