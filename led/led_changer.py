@@ -2,6 +2,7 @@ import ctypes
 import traceback
 import signal
 import sys
+import time
 from serial_wrapper import SerialWrapper
 
 dbprint = print if 'debug' in sys.argv else lambda *args, **kwargs: None
@@ -74,7 +75,7 @@ class LEDChanger:
         self._handler(0, 0)
         # Spin until we're done here
         while self.active:
-            pass
+            time.sleep(0.001)
         print('past loop')
 
     def stop(self):

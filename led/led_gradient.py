@@ -23,9 +23,12 @@ class LEDGradient(LEDChanger):
         super().__init__(serial_wrapper, None)
         self.num_colors = 4
         self.gradient = None
+        self.gradient_file = gradient_file
         self.update_props(gradient_file, duration, loop)
 
     def update_props(self, gradient_file, duration, loop):
+        if gradient_file != self.gradient_file:
+            self.gradient = None
         self.gradient_file = gradient_file
         self.duration = duration
         self.loop = loop

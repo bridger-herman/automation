@@ -16,7 +16,13 @@ class LEDServer(HTTPServer):
     def __init__(self, address, port, arduino=None):
         print('initializing server', address, port)
         self.ser = SerialWrapper(arduino)
-        self.led_obj = LEDGradient(self.ser, "./gradients/test.png", 2, False)
+        self.which_gradient = 0
+        self.led_obj = LEDGradient(
+                self.ser,
+                self._get_gradient_list()[self.which_gradient],
+                2,
+                False
+        )
         self._set_led_process()
         super().__init__((address, port), partial(Handler, self._get_routes()))
 
@@ -36,10 +42,13 @@ class LEDServer(HTTPServer):
     def _active(self):
         return self.led_process.is_alive()
 
-    def gradient_list(self, data=''):
+    def _get_gradient_list(self):
         grad_dir = Path('./gradients')
-        gradients = list(map(lambda g: str(grad_dir.joinpath(g)), \
-                os.listdir(str(grad_dir))))
+        return list(sorted(map(lambda g: str(grad_dir.joinpath(g)), \
+                os.listdir(str(grad_dir)))))
+
+    def gradient_list(self, data=''):
+        gradients = self._get_gradient_list()
         return (True, 'application/json', json.dumps({'gradients':gradients}))
 
     def toggle_play(self, data=''):
@@ -69,6 +78,7 @@ class LEDServer(HTTPServer):
             'duration':self.led_obj.duration,
             'loop':self.led_obj.loop,
             'src':self.led_obj.gradient_file,
+            'which':self.which_gradient,
         }
         return (True, '', json.dumps(to_send))
 
@@ -80,7 +90,8 @@ class LEDServer(HTTPServer):
             request = json.loads(data)
             loop = bool(request['loop'])
             duration = float(request['duration'])
-            src = request['src']
+            self.which_gradient = int(request['which'])
+            src = self._get_gradient_list()[self.which_gradient]
             self.led_obj.update_props(src, duration, loop)
             return (True, '', '')
         except:
@@ -88,5 +99,5 @@ class LEDServer(HTTPServer):
             return (False, 'text/plain', 'Failure')
 
 if __name__ == '__main__':
-    httpd = LEDServer('0.0.0.0', 8000, '/dev/ttyACM1')
+    httpd = LEDServer('0.0.0.0', 8000, '/dev/ttyACM0')
     httpd.serve_forever()
