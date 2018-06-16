@@ -2,7 +2,7 @@ from led_changer import LEDChanger
 
 class LEDLinearFade(LEDChanger):
     def __init__(self, serial_wrapper, color1=(0, 0, 0, 0), color2=(0, 0, 0, 0),
-            duration=1, resolution=10, white=None):
+            duration=1, resolution=60, white=None):
         '''
         Class LEDFade
         Attributes:

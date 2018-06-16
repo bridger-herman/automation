@@ -2,6 +2,7 @@ from led_changer import LEDChanger
 from PIL import Image
 import numpy as np
 from serial_wrapper import SerialMockup, SerialWrapper
+from led_fade import LEDLinearFade
 import pickle
 import sys
 import os
@@ -60,13 +61,37 @@ class LEDGradient(LEDChanger):
     def _load_from_file(self):
         if self.gradient is None:
             print('loading from file')
-            img = Image.open(self.gradient_file)
-            pixels = np.array(img, dtype=np.uint8)
-            rows, cols, depth = pixels.shape
-            assert depth == 3
-            mid = rows//2
-            mid_rgb = mid//2
-            mid_white = mid_rgb + mid
-            self.gradient = [list(pixels[mid_rgb, i, :]) + [pixels[mid_white, i, 2]] \
-                    for i in range(cols)]
+            # try:
+            self.gradient = load_gradient(self.gradient_file)
+            # start_color = self.prev_color
+            start_color = self.prev_color
+            end_color = self.gradient[0]
+            resolution = 30
+            num_colors = len(start_color)
+            color_diff = [abs(start_color[i] - end_color[i]) \
+                    for i in range(num_colors)]
+            color_step = [d/resolution for d in color_diff]
+            # self.delays = iter([self.duration/self.resolution]*self.resolution)
+            colors = list(iter([[int(start_color[i] + n*color_step[i] + 0.5) \
+                    for i in range(num_colors)] for n in range(resolution)]))
+            self.gradient = colors + self.gradient
         return self.gradient
+
+def load_gradient(filename):
+    img = Image.open(filename)
+    pixels = np.array(img, dtype=np.uint8)
+    rows, cols, depth = pixels.shape
+    assert depth == 3
+    mid = rows//2
+    mid_rgb = mid//2
+    mid_white = mid_rgb + mid
+    return [list(pixels[mid_rgb, i, :]) + [pixels[mid_white, i, 2]] \
+            for i in range(cols)]
+
+def solid_color(gradient_pixels, color_tolerance=1):
+    colors = zip(*gradient_pixels)
+    collapsed_colors = [set(c) for c in colors]
+    if all([len(c) <= color_tolerance for c in collapsed_colors]):
+        return [tuple(c)[0] for c in collapsed_colors]
+    else:
+        return None

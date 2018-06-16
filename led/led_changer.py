@@ -4,17 +4,31 @@ import signal
 import sys
 import time
 from serial_wrapper import SerialWrapper
-from threading import Timer
+from threading import Timer, Lock
+import pdb
 
 dbprint = print if 'debug' in sys.argv else lambda *args, **kwargs: None
 MAX_COLORS = 4
 
 import time
 
+def copy_elmtwise(src, dst):
+    print('copying', id(src), id(src))
+    assert len(src) == len(dst)
+    for i in range(len(src)):
+        dst[i] = src[i]
+    return dst
+
 class LEDChanger:
     def __init__(self, serial_wrapper, white=None):
         self.queue = []
         self.dones = []
+        print('RE_INIT')
+        self.color_lock = Lock()
+        self.color_lock.acquire()
+        self.prev_color = [0, 0, 0, 0]
+        print('hai??????????????', id(self.prev_color))
+        self.color_lock.release()
         self.white = white
         self.start_time = time.time()
         self.ser = serial_wrapper
@@ -38,6 +52,10 @@ class LEDChanger:
         io_delay = t1 - t0
         try:
             next_color = next(self.colors)
+            self.color_lock.acquire()
+            # self.prev_color = tuple(next_color)
+            # print('setting', self.prev_color, id(self.prev_color))
+            self.color_lock.release()
             next_delay = next(self.delays)
             self.queue.insert(0, (next_color, next_delay))
             dbprint('queuing', next_color, next_delay)
@@ -75,9 +93,11 @@ class LEDChanger:
         self.start_time = time.time()
         self._handler()
         # Spin until we're done here
+        print('before loop', self.prev_color)
         while self.active:
             time.sleep(0.001)
         print('past loop')
+        print('after loop', self.prev_color, id(self.prev_color))
 
     def stop(self):
         if not self.active:
@@ -89,8 +109,12 @@ class LEDChanger:
             self._send()
         bytes_send = (ctypes.c_ubyte * 5)(*[1, 0, 0, 0, 0])
         self.ser.write(bytes_send)
+        # self.prev_color = self.dones[-1][0]
+        copy_elmtwise(self.dones[-1][0], self.prev_color)
         print('total time', time.time() - self.start_time)
+        print('before reset', self.prev_color)
         self.reset()
+        print('after reset', self.prev_color)
 
     def reset(self):
         print('leds resetting')
@@ -104,7 +128,7 @@ class LEDChanger:
 
 
     def __del__(self):
-        dbprint('deleting')
+        print('deleting')
         self.stop()
         self.ser.close()
         self.timer = None

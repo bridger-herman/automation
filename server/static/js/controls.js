@@ -25,7 +25,7 @@ function toggleGradientPlay() {
   ajGET('get-gradient', function (info) {
     setTimeout(
       function () { updatePlayingIcons(); },
-      1000*parseInt(info.duration)
+      1200*parseInt(info.duration)
     );
   });
 }

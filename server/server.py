@@ -9,7 +9,8 @@ from functools import partial
 from pathlib import Path
 
 sys.path.append('../led')
-from led_gradient import LEDGradient
+from led_gradient import LEDGradient, load_gradient, solid_color
+from led_fade import LEDLinearFade
 from serial_wrapper import SerialWrapper
 from handler import Handler
 
@@ -38,6 +39,7 @@ class LEDServer(HTTPServer):
         }
 
     def _set_led_process(self):
+        print('before setting process', self.led_obj.prev_color)
         self.led_process = LEDProcess(self.led_obj)
 
     def _active(self):
@@ -56,9 +58,12 @@ class LEDServer(HTTPServer):
         if not self._active():  # Reset, then start again
             self._set_led_process()
         if not self.led_process.started:  # We're ready to start
+            print('starting process', self.led_obj.prev_color)
             self.led_process.start()
         else:
+            print('terminating process', self.led_obj.prev_color)
             self.led_process.terminate()
+            print('terminated process', self.led_obj.prev_color)
             self._set_led_process()
         return (True, '', '')
 
@@ -75,6 +80,7 @@ class LEDServer(HTTPServer):
             return (False, 'text/html', 'Failed to load')
 
     def get_gradient(self, data=''):
+        print('beginning of get_gradient', self.led_obj.prev_color)
         to_send = {
             'duration':self.led_obj.duration,
             'loop':self.led_obj.loop,
@@ -84,16 +90,20 @@ class LEDServer(HTTPServer):
         return (True, '', json.dumps(to_send))
 
     def is_playing(self, data=''):
+        print('is playing', self.led_obj.prev_color, id(self.led_obj.prev_color))
         return (True, '', json.dumps({'playing':self._active()}))
 
     def set_gradient(self, data=''):
+        print('beginning of set_gradient', self.led_obj.prev_color)
         try:
             request = json.loads(data.decode('utf-8'))
             loop = bool(request['loop'])
             duration = float(request['duration'])
             self.which_gradient = int(request['which'])
             src = self._get_gradient_list()[self.which_gradient]
+            print('before update props', self.led_obj.prev_color)
             self.led_obj.update_props(src, duration, loop)
+            print('after update props', self.led_obj.prev_color)
             return (True, '', '')
         except:
             traceback.print_exc()
