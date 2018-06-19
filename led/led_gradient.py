@@ -1,11 +1,8 @@
 from led_changer import LEDChanger
 from PIL import Image
 import numpy as np
-from serial_wrapper import SerialMockup, SerialWrapper
-from led_fade import LEDLinearFade
-import pickle
-import sys
-import os
+import traceback
+from color_manager import read_col
 
 PERFORMANCE_CUTOFFS = [
     (15,2),
@@ -59,22 +56,28 @@ class LEDGradient(LEDChanger):
                 yield item
 
     def _load_from_file(self):
-        if self.gradient is None:
-            print('loading from file')
-            # try:
-            self.gradient = load_gradient(self.gradient_file)
-            # start_color = self.prev_color
-            start_color = self.prev_color
-            end_color = self.gradient[0]
-            resolution = 30
-            num_colors = len(start_color)
-            color_diff = [abs(start_color[i] - end_color[i]) \
-                    for i in range(num_colors)]
-            color_step = [d/resolution for d in color_diff]
-            # self.delays = iter([self.duration/self.resolution]*self.resolution)
-            colors = list(iter([[int(start_color[i] + n*color_step[i] + 0.5) \
-                    for i in range(num_colors)] for n in range(resolution)]))
-            self.gradient = colors + self.gradient
+        print('loading from file')
+        self.gradient = load_gradient(self.gradient_file)
+        try:
+            start_color = read_col()
+        except:
+            traceback.print_exc()
+            start_color = [255, 255, 255, 255]
+        print('evaled color', start_color)
+        end_color = self.gradient[0]
+
+        # Fade between colors should last half a second
+        resolution = (self.duration / len(self.gradient))
+        assert resolution > 0
+        resolution = int(0.5 / resolution)
+
+        num_colors = len(start_color)
+        color_diff = [(end_color[i] - start_color[i]) \
+                for i in range(num_colors)]
+        color_step = [d/resolution for d in color_diff]
+        fading_colors = list(iter([[int(start_color[i] + n*color_step[i] + 0.5) \
+                for i in range(num_colors)] for n in range(resolution)]))
+        self.gradient = fading_colors + self.gradient
         return self.gradient
 
 def load_gradient(filename):
