@@ -1,11 +1,8 @@
 import ctypes
-import traceback
-import signal
 import sys
 import time
-from serial_wrapper import SerialWrapper
-from threading import Timer, Lock
-import pdb
+from color_manager import update_col
+from threading import Timer
 
 dbprint = print if 'debug' in sys.argv else lambda *args, **kwargs: None
 MAX_COLORS = 4
@@ -19,21 +16,17 @@ def copy_elmtwise(src, dst):
         dst[i] = src[i]
     return dst
 
+
 class LEDChanger:
     def __init__(self, serial_wrapper, white=None):
         self.queue = []
         self.dones = []
         print('RE_INIT')
-        self.color_lock = Lock()
-        self.color_lock.acquire()
-        self.prev_color = [0, 0, 0, 0]
-        print('hai??????????????', id(self.prev_color))
-        self.color_lock.release()
+        update_col([0]*4)
         self.white = white
         self.start_time = time.time()
         self.ser = serial_wrapper
         self.timer = None # Don't start timing until start() is called
-        signal.signal(signal.SIGTERM, self._shutdown)
         self.active = False
 
     def setup(self):
@@ -45,17 +38,11 @@ class LEDChanger:
         dbprint('handled!')
         io_delay = 0
         t0 = time.time()
-        # print('befpre read')
         incoming = self.ser.readline()
-        # print('after read')
         t1 = time.time()
         io_delay = t1 - t0
         try:
             next_color = next(self.colors)
-            self.color_lock.acquire()
-            # self.prev_color = tuple(next_color)
-            # print('setting', self.prev_color, id(self.prev_color))
-            self.color_lock.release()
             next_delay = next(self.delays)
             self.queue.insert(0, (next_color, next_delay))
             dbprint('queuing', next_color, next_delay)
@@ -88,16 +75,19 @@ class LEDChanger:
         self.stop()
 
     def start(self):
-        print('started')
+        print('Started LEDs')
+
         self.active = True
         self.start_time = time.time()
         self._handler()
+
         # Spin until we're done here
-        print('before loop', self.prev_color)
         while self.active:
             time.sleep(0.001)
-        print('past loop')
-        print('after loop', self.prev_color, id(self.prev_color))
+        try:
+            update_col(self.dones[-1][0])
+        except IndexError:
+            dbprint('Not enough colors have been sent')
 
     def stop(self):
         if not self.active:
@@ -109,12 +99,9 @@ class LEDChanger:
             self._send()
         bytes_send = (ctypes.c_ubyte * 5)(*[1, 0, 0, 0, 0])
         self.ser.write(bytes_send)
-        # self.prev_color = self.dones[-1][0]
-        copy_elmtwise(self.dones[-1][0], self.prev_color)
-        print('total time', time.time() - self.start_time)
-        print('before reset', self.prev_color)
+        update_col(self.dones[-1][0])
+        print('Total Time:', time.time() - self.start_time)
         self.reset()
-        print('after reset', self.prev_color)
 
     def reset(self):
         print('leds resetting')
