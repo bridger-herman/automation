@@ -16,6 +16,7 @@ function init() {
     ajGET('get-gradient', updateGradientControls);
     $('#gradient-loop').on('change', sendGradientUpdates);
     $('#gradient-duration').on('change', sendGradientUpdates);
+    $('#slider-brightness').on('change', sendGradientUpdates);
     $('#gradient-play-pause').on('click', toggleGradientPlay);
   });
 
