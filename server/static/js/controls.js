@@ -8,6 +8,7 @@ function updateGradientControls(info) {
   $('#gradient-preview').attr('src', info.src);
   $('#gradient-loop').is(':checked',info.loop);
   $('#gradient-duration').val(info.duration);
+  $('#slider-brightness').val(info.brightness);
   updateSelectedGradient(info.which);
 }
 
@@ -41,11 +42,18 @@ function sendGradientUpdates() {
   let src = $('#gradient-preview').attr('src');
   let loop = $('#gradient-loop').is(':checked');
   let duration = $('#gradient-duration').val();
+  let brightness = $('#slider-brightness').val();
 
   // Not sure why this is necessary...
   let selected = $('#favorite-list').find('.selected');
   let which = $('#favorite-list').children().index(selected);
 
-  let data = {'src':src, 'loop':loop, 'duration':duration, 'which':which};
+  let data = {
+    'src':src,
+    'loop':loop,
+    'duration':duration,
+    'which':which,
+    'brightness':brightness,
+  };
   ajPOST('set-gradient', data, function() {});
 }

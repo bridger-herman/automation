@@ -81,6 +81,7 @@ class LEDServer(HTTPServer):
             'loop':self.led_obj.loop,
             'src':self.led_obj.gradient_file,
             'which':self.which_gradient,
+            'brightness':self.led_obj.brightness,
         }
         return (True, '', json.dumps(to_send))
 
@@ -94,7 +95,8 @@ class LEDServer(HTTPServer):
             duration = float(request['duration'])
             self.which_gradient = int(request['which'])
             src = self._get_gradient_list()[self.which_gradient]
-            self.led_obj.update_props(src, duration, loop)
+            brightness = float(request['brightness'])
+            self.led_obj.update_props(src, duration, loop, brightness)
             return (True, '', '')
         except:
             traceback.print_exc()
