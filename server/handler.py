@@ -41,6 +41,10 @@ class Handler(BaseHTTPRequestHandler):
                 self.wfile.write(bytes(response, ENCODING))
         else:
             try:
+                bad_word = '?dont_use_this'
+                if bad_word in self.path:
+                    index = self.path.index(bad_word)
+                    self.path = self.path[:index]
                 fout = open(self.path, 'rb')
                 self._send_hdr(200, mimetypes.guess_type(self.path))
                 self.wfile.write(fout.read())

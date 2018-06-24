@@ -4,3 +4,4 @@ __pycache__
 .DS_Store
 *.*~
 server/color
+server/brightness_slider.png

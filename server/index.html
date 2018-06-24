@@ -5,6 +5,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet">
     <link rel="stylesheet" href="./static/css/index.css">
+    <link rel="stylesheet" href="./static/css/ranges.css">
     <link rel="stylesheet" href="./static/css/favorites.css">
     <title>LEDs</title>
   </head>
@@ -16,7 +17,9 @@
         <input class="touchable" type="number" id="gradient-duration" value="">
         <input class="touchable" type="checkbox" id="gradient-loop" value="">
       </div>
-      <input type="range" class="input-slider" min="0" max="1" step="0.01" value="1" id="slider-brightness">
+      <div class="input-slider" id="input-slider-bg" style="background-image: url('./brightness_slider.png');">
+        <input type="range" class="input-slider" min="0" max="1" step="0.01" value="1" id="slider-brightness">
+      </div>
     </div>
 
     <div class="centered container favorites" id="favorite-gradients">

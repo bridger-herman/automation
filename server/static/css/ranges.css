@@ -1,24 +1,40 @@
-/* Inspiration from https://stackoverflow.com/a/38163892 *
+/* Inspiration from https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css/ */
 
-/* Chrome */
-input[type='range'] {
-  -webkit-appearance: none;
-  overflow: hidden;
-  background-color: #161616;
+/* Override defaults for browsers */
+input[type=range] {
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 100%; /* Specific width is required for Firefox. */
+  /* background: transparent; /* Otherwise white in Chrome */ */
+  background: #0ab; /* Otherwise white in Chrome */
+  margin: 20px 0;
 }
 
-input[type='range']::-webkit-slider-runnable-track {
+input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 60px;
-  border: black 2px solid;
-  border-radius: 2px;
 }
 
-input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 80px;
-  height: 56px;
-  background: #999D; /* To be replaced by RGBW */
-  border: solid 2px white;
-  border-radius: 2px;
+input[type=range]:focus {
+  outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+
+
+/* Special styling for WebKit/Blink */
+input[type=range]::-webkit-slider-thumb {
+  border: 2px solid #000000;
+  height: 46px;
+  width: 36px;
+  border-radius: 0;
+  background: #ffffff;
+  cursor: pointer;
+  margin-top: -30px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+}
+
+/* All the same stuff for Firefox */
+input[type=range]::-moz-range-thumb {
+  border: 2px solid #000000;
+  height: 46px;
+  width: 36px;
+  border-radius: 0;
+  background: #ffffff;
+  cursor: pointer;
 }
