@@ -31,7 +31,7 @@ function toggleGradientPlay() {
         console.log($('#input-slider-bg'));
         $('#input-slider-bg').css('background-image', 'url("/brightness_slider.png?dont_use_this' + d.getTime() + '")');
       },
-      1200*parseInt(info.duration)
+      1500*parseInt(info.duration)
     );
   });
 }
