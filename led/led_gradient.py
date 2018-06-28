@@ -102,3 +102,16 @@ def solid_color(gradient_pixels, color_tolerance=1):
         return [tuple(c)[0] for c in collapsed_colors]
     else:
         return None
+
+def main():
+    from serial_wrapper import SerialWrapper
+    l = LEDGradient(
+            SerialWrapper('/dev/ttyACM0'),
+            '../server/gradients/grad_04_sunrise.png',
+            duration=10,
+            loop=False
+    )
+    l.start()
+
+if __name__ == '__main__':
+    main()
