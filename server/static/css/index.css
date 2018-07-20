@@ -58,3 +58,8 @@ body {
   width: 100%;
   transform: rotateZ(270deg);
 }
+
+.icon-input {
+  display: flex;
+  align-items: center;
+}

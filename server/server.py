@@ -31,7 +31,8 @@ class LEDServer(HTTPServer):
             'get-gradient':(('GET'), self.get_gradient),
             'set-gradient':(('POST'), self.set_gradient),
             'is-playing'     :(('GET'), self.is_playing),
-            'toggle-play' :(('POST'), self.toggle_play),
+            'play-leds' :(('POST'), self.play_leds),
+            'stop-leds' :(('POST'), self.stop_leds),
             'gradient-list':(('GET'), self.gradient_list),
         }
 
@@ -44,11 +45,14 @@ class LEDServer(HTTPServer):
         gradients = self._get_gradient_list()
         return (True, 'application/json', json.dumps({'gradients':gradients}))
 
-    def toggle_play(self, data=''):
+    def play_leds(self, data=''):
+        if not self.led_obj.active:
+            self.led_obj.start()
+        return (True, '', '')
+
+    def stop_leds(self, data=''):
         if self.led_obj.active:
             self.led_obj.stop()
-        else:
-            self.led_obj.start()
         return (True, '', '')
 
     # Takes string as data

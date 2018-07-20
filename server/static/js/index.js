@@ -17,7 +17,8 @@ function init() {
     $('#gradient-loop').on('change', sendGradientUpdates);
     $('#gradient-duration').on('change', sendGradientUpdates);
     $('#slider-brightness').on('change', sendGradientUpdates);
-    $('#gradient-play-pause').on('click', toggleGradientPlay);
+    $('#gradient-play').on('click', playLeds);
+    $('#gradient-stop').on('click', stopLeds);
   });
 
 }

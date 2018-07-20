@@ -2,7 +2,6 @@ from led_changer import LEDChanger
 from PIL import Image
 import numpy as np
 import traceback
-from color_manager import read_col
 
 PERFORMANCE_CUTOFFS = [
     (15,2),

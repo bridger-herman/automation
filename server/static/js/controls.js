@@ -19,28 +19,12 @@ function setSelectedGradient(event) {
   ajGET('get-gradient', updateGradientControls);
 }
 
-function toggleGradientPlay() {
-  ajPOST('toggle-play', {}, function() {});
-  updatePlayingIcons();
-  // Update icon when current gradient is done (quasi-HACK)
-  ajGET('get-gradient', function (info) {
-    setTimeout(
-      function () {
-        let d = new Date();
-        updatePlayingIcons();
-        console.log($('#input-slider-bg'));
-        $('#input-slider-bg').css('background-image', 'url("/brightness_slider.png?dont_use_this' + d.getTime() + '")');
-      },
-      1500*parseInt(info.duration)
-    );
-  });
+function playLeds() {
+  ajPOST('play-leds', {}, function() {});
 }
 
-function updatePlayingIcons() {
-  ajGET('is-playing', function(info) {
-    if (info.playing) { $('#gradient-play-pause').html('pause'); }
-    else { $('#gradient-play-pause').html('play_arrow'); }
-  });
+function stopLeds() {
+  ajPOST('stop-leds', {}, function() {});
 }
 
 function sendGradientUpdates() {
