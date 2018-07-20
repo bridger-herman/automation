@@ -2,7 +2,6 @@ import os
 import sys
 import json
 import traceback
-from led_process import LEDProcess
 from http.server import HTTPServer
 from functools import partial
 from pathlib import Path
@@ -24,7 +23,6 @@ class LEDServer(HTTPServer):
                 2,
                 False
         )
-        self._set_led_process()
         super().__init__((address, port), partial(Handler, self._get_routes()))
 
     def _get_routes(self):
@@ -37,13 +35,6 @@ class LEDServer(HTTPServer):
             'gradient-list':(('GET'), self.gradient_list),
         }
 
-    def _set_led_process(self):
-        # print('before setting process', self.led_obj.prev_color)
-        self.led_process = LEDProcess(self.led_obj)
-
-    def _active(self):
-        return self.led_process.is_alive()
-
     def _get_gradient_list(self):
         grad_dir = Path('./gradients')
         return list(sorted(map(lambda g: str(grad_dir.joinpath(g)), \
@@ -54,13 +45,10 @@ class LEDServer(HTTPServer):
         return (True, 'application/json', json.dumps({'gradients':gradients}))
 
     def toggle_play(self, data=''):
-        if not self._active():  # Reset, then start again
-            self._set_led_process()
-        if not self.led_process.started:  # We're ready to start
-            self.led_process.start()
+        if self.led_obj.active:
+            self.led_obj.stop()
         else:
-            self.led_process.terminate()
-            self._set_led_process()
+            self.led_obj.start()
         return (True, '', '')
 
     # Takes string as data
@@ -86,9 +74,11 @@ class LEDServer(HTTPServer):
         return (True, '', json.dumps(to_send))
 
     def is_playing(self, data=''):
-        return (True, '', json.dumps({'playing':self._active()}))
+        return (True, '', json.dumps({'playing':self.led_obj.active}))
 
     def set_gradient(self, data=''):
+        if self.led_obj.active:
+            return (True, '', '')
         try:
             request = json.loads(data.decode('utf-8'))
             loop = bool(request['loop'])

@@ -1,8 +1,8 @@
 import ctypes
 import sys
 import time
-from color_manager import update_col
 from threading import Timer
+from multiprocessing import Process
 
 dbprint = print if 'debug' in sys.argv else lambda *args, **kwargs: None
 MAX_COLORS = 4
@@ -21,13 +21,13 @@ class LEDChanger:
     def __init__(self, serial_wrapper, white=None):
         self.queue = []
         self.dones = []
-        print('RE_INIT')
-        update_col([0]*4)
+        self.prev_color = [0]*4
         self.white = white
         self.start_time = time.time()
         self.ser = serial_wrapper
         self.timer = None # Don't start timing until start() is called
         self.active = False
+        self._process_set()
 
     def setup(self):
         # Generators for indefinite color
@@ -74,32 +74,40 @@ class LEDChanger:
         print('caught SIGTERM')
         self.stop()
 
+    def _process_set(self):
+        self.process = Process(target=self._process_start)
+
+    def _process_start(self):
+        # Spin until we're done here
+        while self.active:
+            time.sleep(0.001)
+
     def start(self):
         print('Started LEDs')
 
         self.active = True
         self.start_time = time.time()
         self._handler()
+        self.process.start()
 
-        # Spin until we're done here
-        while self.active:
-            time.sleep(0.001)
         try:
-            update_col(self.dones[-1][0])
+            self.prev_color = self.dones[-1][0]
         except IndexError:
             dbprint('Not enough colors have been sent')
 
     def stop(self):
         if not self.active:
             return
-        dbprint('stopped')
+        print('stopped')
+        self.process.terminate()
+        self._process_set()
         self.active = False
         while len(self.queue) > 0:
             dbprint('finishing send')
             self._send()
         bytes_send = (ctypes.c_ubyte * 5)(*[1, 0, 0, 0, 0])
         self.ser.write(bytes_send)
-        update_col(self.dones[-1][0])
+        self.prev_color = self.dones[-1][0]
         print('Total Time:', time.time() - self.start_time)
         self.reset()
 
@@ -109,9 +117,15 @@ class LEDChanger:
             colors, delays = zip(*self.dones)
             self.colors = iter(colors)
             self.delays = iter(delays)
+            self.cleanup()
             self.dones = []
         except ValueError:
             print('nothing to reset')
+
+    # Clean up after resetting
+    # Defined by subclasses
+    def cleanup(self):
+        pass
 
 
     def __del__(self):

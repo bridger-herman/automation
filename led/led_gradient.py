@@ -23,8 +23,17 @@ class LEDGradient(LEDChanger):
         self.num_colors = 4
         self.gradient = None
         self.gradient_file = gradient_file
+        self.num_fade_colors = 0
+        self.divisor = 1
         self.brightness = 1.0
+
         self.update_props(gradient_file, duration, loop)
+
+    def update_resolution(self):
+        # Fade between colors/gradients will last 1.0 second
+        resolution = (self.duration / len(self.gradient))
+        assert resolution > 0
+        self.resolution = int(1.0 / resolution)
 
     def update_props(self, gradient_file, duration, loop, brightness=1.0):
         if gradient_file != self.gradient_file:
@@ -40,6 +49,7 @@ class LEDGradient(LEDChanger):
         for cutoff, divisor in PERFORMANCE_CUTOFFS:
             if self.duration <= cutoff:
                 colors_full_res = colors_full_res[::divisor]
+                self.divisor = divisor
         time_res = self.duration/len(colors_full_res)
         delays = [time_res for _ in range(len(colors_full_res))]
         if self.loop:
@@ -53,16 +63,28 @@ class LEDGradient(LEDChanger):
         print('loop:', self.loop)
         print('brightness:', self.brightness)
 
+    # Pop off the colors from fading between
+    def cleanup(self):
+        print('num_fade_colors', self.num_fade_colors)
+        for i in range(self.num_fade_colors//self.divisor):
+            c = next(self.colors)
+            d = next(self.delays)
+            print('popped', c, d)
+
     def _inf_gen(self, lst):
+        first_run = True
         while True:
             for item in lst:
                 yield item
+            if first_run:
+                lst = lst[self.num_fade_colors//self.divisor:]
+                first_run = False
 
     def _load_from_file(self):
         print('loading from file')
         self.gradient = load_gradient(self.gradient_file)
         try:
-            start_color = read_col()
+            start_color = self.prev_color
         except:
             traceback.print_exc()
             start_color = [255, 255, 255, 255]
@@ -70,17 +92,15 @@ class LEDGradient(LEDChanger):
         self.gradient = [[int(self.brightness * c) for c in rgbw] for rgbw in self.gradient]
         end_color = self.gradient[0]
 
-        # Fade between colors should last half a second
-        resolution = (self.duration / len(self.gradient))
-        assert resolution > 0
-        resolution = int(1.0 / resolution)
+        self.update_resolution()
 
         num_colors = len(start_color)
         color_diff = [(end_color[i] - start_color[i]) \
                 for i in range(num_colors)]
-        color_step = [d/resolution for d in color_diff]
+        color_step = [d/self.resolution for d in color_diff]
         fading_colors = list(iter([[int(start_color[i] + n*color_step[i] + 0.5) \
-                for i in range(num_colors)] for n in range(resolution)]))
+                for i in range(num_colors)] for n in range(self.resolution)]))
+        self.num_fade_colors = len(fading_colors)
         self.gradient = fading_colors + self.gradient
         return self.gradient
 
