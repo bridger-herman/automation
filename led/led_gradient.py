@@ -36,7 +36,7 @@ class LEDGradient(LEDChanger):
         # Fade between colors/gradients will last 1.0 second
         resolution = self.duration / (len(self.gradient) // self.divisor)
         assert resolution > 0
-        self.resolution = int(2.0 / resolution)
+        self.resolution = int(1.0 / resolution)
 
     def update_props(self, gradient_file, duration, loop, brightness=1.0):
         if gradient_file != self.gradient_file or brightness != self.brightness:
@@ -48,6 +48,7 @@ class LEDGradient(LEDChanger):
         self.setup()
 
     def setup(self):
+        self.divisor = 1
         for cutoff, divisor in PERFORMANCE_CUTOFFS:
             if self.duration <= cutoff:
                 self.divisor = divisor
@@ -61,7 +62,6 @@ class LEDGradient(LEDChanger):
         else:
             self.colors = iter(colors_full_res)
             self.delays = iter(delays)
-        print('time-res:', time_res)
         print('duration:', self.duration)
         print('loop:', self.loop)
         print('brightness:', self.brightness)
