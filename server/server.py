@@ -5,12 +5,14 @@ import traceback
 from http.server import HTTPServer
 from functools import partial
 from pathlib import Path
+from datetime import datetime
 
 sys.path.append('../led')
 from led_gradient import LEDGradient, load_gradient, solid_color
 from led_fade import LEDLinearFade
 from serial_wrapper import SerialWrapper
 from handler import Handler
+from alarm import Alarm
 
 class LEDServer(HTTPServer):
     def __init__(self, address, port, arduino=None):
@@ -23,6 +25,7 @@ class LEDServer(HTTPServer):
                 2,
                 False
         )
+        self._set_alarm_list()
         super().__init__((address, port), partial(Handler, self._get_routes()))
 
     def _get_routes(self):
@@ -34,7 +37,56 @@ class LEDServer(HTTPServer):
             'play-leds' :(('POST'), self.play_leds),
             'stop-leds' :(('POST'), self.stop_leds),
             'gradient-list':(('GET'), self.gradient_list),
+            'alarm-list':(('GET', 'POST'), self.alarm_list),
         }
+
+    def _set_alarm_list(self):
+        alarms_text = self._get_alarm_list()
+        self.alarms = []
+        for alarm in alarms_text:
+            alarm_time = datetime(
+                year=alarm['year'],
+                month=alarm['month'],
+                day=alarm['day'],
+                hour=alarm['hour'],
+                minute=alarm['minute'],
+                second=alarm['second'],
+            )
+            if datetime.now() < alarm_time:
+                self.alarms.append(Alarm(alarm_time, self._play_leds_from_alarm,
+                        (alarm['src'], alarm['duration'], alarm['loop'])
+                ))
+
+    def _play_leds_from_alarm(self, src, duration, loop):
+        self.led_obj.update_props(src, duration, loop)
+        self.play_leds()
+
+    def _get_alarm_list(self):
+        fin = open('./alarm_list.csv')
+        alarm_list = []
+        for line in fin:
+            line = line.split(',')
+            alarm_list.append({
+                'year': int(line[0]),
+                'month': int(line[1]),
+                'day': int(line[2]),
+                'hour': int(line[3]),
+                'minute': int(line[4]),
+                'second': int(line[5]),
+                'src': line[6],
+                'duration': int(line[7]),
+                'loop': bool(eval(line[8])),
+            })
+        return alarm_list
+
+    def alarm_list(self, data=''):
+        if len(data) > 0:
+            self._set_alarm_list()
+        try:
+            alarm_list = self._get_alarm_list()
+            return (True, 'application/json', json.dumps({'alarms': alarm_list}))
+        except:
+            return (False, 'application/json', json.dumps({}))
 
     def _get_gradient_list(self):
         grad_dir = Path('./gradients')

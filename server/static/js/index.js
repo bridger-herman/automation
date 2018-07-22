@@ -8,8 +8,22 @@ function makeGradientPreview(gradientPath) {
       '</li>';
 }
 
-function init() {
+function makeAlarmPreviews(alarm) {
+  return '<li class="alarm-text>"' +
+    '<p>' + alarm.toSource() + '</p>' +
+    '</li>';
+}
 
+function updateAlarms() {
+  ajGET('alarm-list', function(alarms) {
+    let list = $('#alarm-list');
+    for (var x in alarms.alarms) {
+      list.append(makeAlarmPreviews(alarms.alarms[x]));
+    }
+  });
+}
+
+function init() {
   // Get the available gradients from the server
   ajGET('gradient-list', function(info) {
     let list = $('#favorite-list');
@@ -25,6 +39,13 @@ function init() {
     $('#gradient-stop').on('click', stopLeds);
   });
 
+  updateAlarms();
+
+  $('#refresh-alarms').on('click', function() {
+    ajPOST('alarm-list', {'refresh':true}, function() {
+      updateAlarms();
+    });
+  })
 }
 
 document.onload = init();
