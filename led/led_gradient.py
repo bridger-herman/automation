@@ -66,7 +66,6 @@ class LEDGradient(LEDChanger):
 
     # Pop off the colors from fading between
     def cleanup(self):
-        # Don't want to clean up infinitely...
         if not self.need_cleanup:
             return
         for i in range(self.num_fade_colors//self.divisor):

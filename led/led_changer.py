@@ -9,13 +9,6 @@ MAX_COLORS = 4
 
 import time
 
-def copy_elmtwise(src, dst):
-    print('copying', id(src), id(src))
-    assert len(src) == len(dst)
-    for i in range(len(src)):
-        dst[i] = src[i]
-    return dst
-
 
 class LEDChanger:
     def __init__(self, serial_wrapper, white=None):
@@ -35,7 +28,8 @@ class LEDChanger:
         self.delays = iter([])
 
     def _handler(self):
-        dbprint('handled!')
+        if not self.active:
+            return
         io_delay = 0
         t0 = time.time()
         incoming = self.ser.readline()
@@ -45,7 +39,6 @@ class LEDChanger:
             next_color = next(self.colors)
             next_delay = next(self.delays)
             self.queue.insert(0, (next_color, next_delay))
-            dbprint('queuing', next_color, next_delay)
         except StopIteration:
             self.stop()
         else:
@@ -58,21 +51,15 @@ class LEDChanger:
         if self.white != None:
             color += [self.white]
         data = [0] + list(color) # [<reset>, <color>]
-        dbprint('sending', color)
         bytes_send = (ctypes.c_ubyte * len(data))(*data)
         t0 = time.time()
         self.ser.write(bytes_send)
         t1 = time.time()
         io_time += t1 - t0
-        dbprint('sent', color, delay)
         self.dones.append((color, delay))
         io_time = io_time if (delay - io_time) >= 0 else -delay
         self.timer = Timer(delay - io_time, self._handler)
         self.timer.start()
-
-    def _shutdown(self, signum, frame):
-        print('caught SIGTERM')
-        self.stop()
 
     def _process_set(self):
         self.process = Process(target=self._process_start)
@@ -98,16 +85,20 @@ class LEDChanger:
     def stop(self):
         if not self.active:
             return
-        print('stopped')
+
         self.process.terminate()
+        while self.process.is_alive():
+            time.sleep(0.01)
         self._process_set()
+
         self.active = False
         while len(self.queue) > 0:
-            dbprint('finishing send')
+            print('finishing send')
             self._send()
         bytes_send = (ctypes.c_ubyte * 5)(*[1, 0, 0, 0, 0])
         self.ser.write(bytes_send)
         self.prev_color = self.dones[-1][0]
+
         print('Total Time:', time.time() - self.start_time)
         self.reset()
 
