@@ -1,6 +1,7 @@
 from led_changer import LEDChanger
 from PIL import Image
 import numpy as np
+from scipy import ndimage
 import traceback
 
 PERFORMANCE_CUTOFFS = [
@@ -116,8 +117,12 @@ def load_gradient(filename):
     mid = rows//2
     mid_rgb = mid//2
     mid_white = mid_rgb + mid
-    return [list(pixels[mid_rgb, i, :]) + [pixels[mid_white, i, 2]] \
-            for i in range(cols)]
+    gradient_pixels = np.array([list(pixels[mid_rgb, i, :]) + [pixels[mid_white, i, 2]] \
+            for i in range(cols)])
+    gradient_pixels = ndimage.generic_filter(gradient_pixels,
+            lambda val: 0 if val <= 1 else val, 1)
+    gradient_pixels = ndimage.median_filter(gradient_pixels, (51, 1))
+    return list(gradient_pixels)
 
 def solid_color(gradient_pixels, color_tolerance=1):
     colors = zip(*gradient_pixels)
