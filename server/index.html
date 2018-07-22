@@ -11,23 +11,23 @@
   </head>
   <body>
     <div class="container" id="gradient-controls">
-      <img id="gradient-preview" src="" alt="current gradient image">
-      <div class="centered" id="gradient-input-controls">
+      <img class="ten-margin" id="gradient-preview" src="" alt="current gradient image">
+      <div class="centered ten-margin" id="gradient-input-controls">
         <button class="material-icons touchable" type="button" id="gradient-play">play_arrow</button>
         <button class="material-icons touchable" type="button" id="gradient-stop">stop</button>
         <input class="touchable" type="number" id="gradient-duration" value="">
-        <div class="material-icons icon-input">
+        <div class="material-icons icon-input touchable">
           loop
           <input class="material-icons touchable" type="checkbox" id="gradient-loop" value="">
         </div>
       </div>
       <div class="input-slider" id="input-slider-bg" style="background-image: url('./brightness_slider.png');">
-        <input type="range" class="input-slider" min="0" max="1" step="0.01" value="1" id="slider-brightness">
+        <input type="range" class="input-slider ten-margin" min="0" max="1" step="0.01" value="1" id="slider-brightness">
       </div>
     </div>
 
     <div class="centered container favorites" id="favorite-gradients">
-      <ul class="no-indent" id='favorite-list'>
+      <ul class="" id='favorite-list'>
         <!-- auto-populated -->
       </ul>
     </div>

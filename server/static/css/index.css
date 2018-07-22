@@ -3,6 +3,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: black;
+  color: #ddd;
 }
 
 .container {
@@ -13,8 +15,8 @@ body {
 }
 
 .container #gradient-preview {
-  margin: 10px;
   width: 90vw;
+  border: 1px solid #ddd;
 }
 
 .centered {
@@ -27,6 +29,10 @@ body {
   width: 20%;
   height: 10vh;
   font-size: 5vh;
+}
+input[type="checkbox"].touchable {
+  transform: scale(2.5);
+  margin: 20px;
 }
 
 .flex-cols {
@@ -42,19 +48,21 @@ body {
 }
 
 .input-width {
-  /* height: 50vh; */
   width: 70%;
 }
 
 .input-slider {
   width: 100%;
-  margin: 10px;
   background-size: 100%;
+  border: 1px solid #ddd;
+}
+
+.input-slider * {
+  border: none;
 }
 
 .vertical-range {
   height: 100%;
-  /* top: 40%; */
   width: 100%;
   transform: rotateZ(270deg);
 }
@@ -62,4 +70,8 @@ body {
 .icon-input {
   display: flex;
   align-items: center;
+}
+
+.ten-margin {
+  margin: 10px;
 }

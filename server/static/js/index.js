@@ -1,7 +1,11 @@
+// Depends on proper formatting of names...
 function makeGradientPreview(gradientPath) {
-    return '<li class="favorite-thumb">' +
-        '<img src="' + gradientPath + '"</img>' +
-        '</li>';
+  let nameIndex = gradientPath.lastIndexOf('_');
+  let dotIndex = gradientPath.lastIndexOf('.');
+  return '<li class="ten-margin favorite-thumb">' +
+      '<img src="' + gradientPath + '"</img>' +
+      '<p>' + gradientPath.slice(nameIndex + 1, dotIndex) + '</p>' +
+      '</li>';
 }
 
 function init() {
