@@ -22,6 +22,7 @@ class LEDGradient(LEDChanger):
         self.num_colors = 4
         self.gradient = None
         self.gradient_file = gradient_file
+        self.need_cleanup = False
         self.num_fade_colors = 0
         self.divisor = 1
         self.brightness = 1.0
@@ -30,7 +31,7 @@ class LEDGradient(LEDChanger):
 
     def update_resolution(self):
         # Fade between colors/gradients will last 1.0 second
-        resolution = (self.duration / len(self.gradient))
+        resolution = self.duration / (len(self.gradient) // self.divisor)
         assert resolution > 0
         self.resolution = int(1.0 / resolution)
 
@@ -44,11 +45,11 @@ class LEDGradient(LEDChanger):
         self.setup()
 
     def setup(self):
-        colors_full_res = self._load_from_file()
         for cutoff, divisor in PERFORMANCE_CUTOFFS:
             if self.duration <= cutoff:
-                colors_full_res = colors_full_res[::divisor]
                 self.divisor = divisor
+        colors_full_res = self._load_from_file()
+        colors_full_res = colors_full_res[::self.divisor]
         time_res = self.duration/len(colors_full_res)
         delays = [time_res for _ in range(len(colors_full_res))]
         if self.loop:
@@ -64,11 +65,13 @@ class LEDGradient(LEDChanger):
 
     # Pop off the colors from fading between
     def cleanup(self):
-        print('num_fade_colors', self.num_fade_colors)
+        # Don't want to clean up infinitely...
+        if not self.need_cleanup:
+            return
         for i in range(self.num_fade_colors//self.divisor):
             c = next(self.colors)
             d = next(self.delays)
-            print('popped', c, d)
+        self.need_cleanup = False
 
     def _inf_gen(self, lst):
         first_run = True
@@ -82,12 +85,14 @@ class LEDGradient(LEDChanger):
     def _load_from_file(self):
         print('loading from file')
         self.gradient = load_gradient(self.gradient_file)
+        self.need_cleanup = True
         try:
             start_color = self.prev_color
         except:
             traceback.print_exc()
             start_color = [255, 255, 255, 255]
         print('evaled color', start_color)
+        # TODO: load from file when updating props and brightness changes
         self.gradient = [[int(self.brightness * c) for c in rgbw] for rgbw in self.gradient]
         end_color = self.gradient[0]
 
