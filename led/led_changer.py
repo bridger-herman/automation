@@ -9,7 +9,6 @@ MAX_COLORS = 4
 
 import time
 
-
 class LEDChanger:
     def __init__(self, serial_wrapper, white=None):
         self.queue = []
@@ -78,7 +77,7 @@ class LEDChanger:
         self.process.start()
 
         try:
-            self.prev_color = self.dones[-1][0]
+            self.set_previous_color()
         except IndexError:
             dbprint('Not enough colors have been sent')
 
@@ -97,7 +96,7 @@ class LEDChanger:
             self._send()
         bytes_send = (ctypes.c_ubyte * 5)(*[1, 0, 0, 0, 0])
         self.ser.write(bytes_send)
-        self.prev_color = self.dones[-1][0]
+        self.set_previous_color()
 
         print('Total Time:', time.time() - self.start_time)
         self.reset()
@@ -118,6 +117,8 @@ class LEDChanger:
     def cleanup(self):
         pass
 
+    def set_previous_color(self):
+        self.prev_color = self.dones[-1][0]
 
     def __del__(self):
         print('deleting')

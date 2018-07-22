@@ -21,10 +21,22 @@ function setSelectedGradient(event) {
 
 function playLeds() {
   ajPOST('play-leds', {}, function() {});
+  // Update the brightness slider when current gradient is done (quasi-HACK)
+  ajGET('get-gradient', function (info) {
+    setTimeout(
+      function () {
+        let d = new Date();
+        console.log($('#input-slider-bg'));
+        $('#input-slider-bg').css('background-image', 'url("/brightness_slider.png?dont_use_this' + d.getTime() + '")');
+      },
+      1000*parseInt(info.duration) + 4000
+    );
+  });
 }
 
 function stopLeds() {
   ajPOST('stop-leds', {}, function() {});
+  $('#input-slider-bg').css('background-image', 'url("/brightness_slider.png?dont_use_this' + d.getTime() + '")');
 }
 
 function sendGradientUpdates() {

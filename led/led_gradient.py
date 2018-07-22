@@ -20,6 +20,8 @@ class LEDGradient(LEDChanger):
             loop: Should we go back to the beginning once we're through
         '''
         super().__init__(serial_wrapper, None)
+        brightness_img = make_brightness_gradient(self.prev_color)
+        brightness_img.save('./brightness_slider.png')
         self.num_colors = 4
         self.gradient = None
         self.gradient_file = gradient_file
@@ -34,10 +36,10 @@ class LEDGradient(LEDChanger):
         # Fade between colors/gradients will last 1.0 second
         resolution = self.duration / (len(self.gradient) // self.divisor)
         assert resolution > 0
-        self.resolution = int(1.0 / resolution)
+        self.resolution = int(2.0 / resolution)
 
     def update_props(self, gradient_file, duration, loop, brightness=1.0):
-        if gradient_file != self.gradient_file:
+        if gradient_file != self.gradient_file or brightness != self.brightness:
             self.gradient = None
         self.brightness = brightness
         self.gradient_file = gradient_file
@@ -81,6 +83,13 @@ class LEDGradient(LEDChanger):
             if first_run:
                 lst = lst[self.num_fade_colors//self.divisor:]
                 first_run = False
+
+    def set_previous_color(self):
+        super().set_previous_color()
+        brightness_compensation = 0 if self.brightness == 0 else 1.0/self.brightness
+        compensated_color = [int(brightness_compensation * c) for c in self.prev_color]
+        brightness_img = make_brightness_gradient(compensated_color)
+        brightness_img.save('./brightness_slider.png')
 
     def _load_from_file(self):
         print('loading from file')
@@ -131,15 +140,19 @@ def solid_color(gradient_pixels, color_tolerance=1):
     else:
         return None
 
-def main():
-    from serial_wrapper import SerialWrapper
-    l = LEDGradient(
-            SerialWrapper('/dev/ttyACM0'),
-            '../server/gradients/grad_04_sunrise.png',
-            duration=10,
-            loop=False
-    )
-    l.start()
+# Also using this to save the current color for use in brightness slider
+# Interpolate from black -> c
+def make_brightness_gradient(end_color):
+    start_color = [0, 0, 0]
 
-if __name__ == '__main__':
-    main()
+    width = 1024
+    height = 50
+
+    num_colors = len(start_color)
+    color_diff = [(end_color[i] - start_color[i]) \
+            for i in range(num_colors)]
+    color_step = [d/width for d in color_diff]
+    fading_colors = [[[int(start_color[i] + c*color_step[i] + 0.5) \
+            for i in range(num_colors)] for c in range(width)] for r in range(height)]
+
+    return Image.fromarray(np.asarray(fading_colors, dtype=np.uint8), mode='RGB')
