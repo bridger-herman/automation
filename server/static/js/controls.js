@@ -21,22 +21,43 @@ function setSelectedGradient(event) {
 
 function playLeds() {
   ajPOST('play-leds', {}, function() {});
+  setButtons(false);
+
   // Update the brightness slider when current gradient is done (quasi-HACK)
   ajGET('get-gradient', function (info) {
     setTimeout(
       function () {
-        let d = new Date();
-        console.log($('#input-slider-bg'));
-        $('#input-slider-bg').css('background-image', 'url("/brightness_slider.png?dont_use_this' + d.getTime() + '")');
+        if (!info.loop) {
+          setButtons(true);
+        }
+      },
+      1000*parseInt(info.duration)
+    );
+    setTimeout(
+      function () {
+        if (!info.loop) {
+          stopLeds();
+        }
       },
       1000*parseInt(info.duration) + 4000
     );
   });
 }
 
+function updateBrightnessGradient() {
+  let d = new Date();
+  $('#input-slider-bg').css('background-image', 'url("/brightness_slider.png?dont_use_this' + d.getTime() + '")');
+}
+
+function setButtons(stopped) {
+  $('#gradient-play').prop('disabled', !stopped);
+  $('#gradient-stop').prop('disabled', stopped);
+}
+
 function stopLeds() {
   ajPOST('stop-leds', {}, function() {});
-  $('#input-slider-bg').css('background-image', 'url("/brightness_slider.png?dont_use_this' + d.getTime() + '")');
+  setButtons(true);
+  updateBrightnessGradient();
 }
 
 function sendGradientUpdates() {
